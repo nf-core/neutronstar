@@ -6,17 +6,18 @@ vim: syntax=groovy
 
 
 //##### Parameters
-version = 0.2
+version = 0.3
 
-//Common options for both supernova and longranger
+// Common options for both supernova and longranger
 def TenX_optional = {sample, lanes, indices, project->
     def str = ""
-    sample!=null ? str <<= "--sample={$sample} " : null
-    lanes!=null ? str <<= "--lanes={$lanes} " : null
-    indices!=null ? str <<= "--indices={$indices} " : null
-    project!=null ? str <<= "--project={$project} " : null
+    sample!=null ? str <<= "--sample=${sample} " : null
+    lanes!=null ? str <<= "--lanes=${lanes} " : null
+    indices!=null ? str <<= "--indices=${indices} " : null
+    project!=null ? str <<= "--project=${project} " : null
     return str
 }
+// Now only supernova options
 def supernova_optional = {maxreads, bcfrac->
     def str = ""
     maxreads!=null ? str <<= "--maxreads=${maxreads} " : null
@@ -30,7 +31,7 @@ if (params.samples == null) { //We don't have sample JSON/YAML file, just use cm
     assert params.fastqs != null : "Missing --fastqs option"
     samples << params.id
     samples << params.fastqs
-    samples << TenX_optional(params.samples, params.lanes, params.indices, params.project)
+    samples << TenX_optional(params.sample, params.lanes, params.indices, params.project)
     samples << supernova_optional(params.maxreads, params.bcfrac)
 }
 for (sample in params.samples) { 
@@ -39,12 +40,12 @@ for (sample in params.samples) {
     s = []
     s << sample.id
     s << sample.fastqs
-    s << TenX_optional(sample.samples, sample.lanes, sample.indices, sample.project)
+    s << TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
     s << supernova_optional(sample.maxreads, sample.bcfrac)
     samples << s  
 }
 params.outdir="."
-params.BUSCOdata = "$BUSCO_LINEAGE_SETS/eukaryota_odb9"
+params.BUSCOdata = "\$BUSCO_LINEAGE_SETS/eukaryota_odb9"
 
 
 //###### Start
@@ -68,13 +69,13 @@ process supernova {
     set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
 
     output:
-    set val(id), file("${id}") into supernova_results
+    set val(id), file("${id}_supernova") into supernova_results
 
     script:
-    def mem = Math.round(task.memory.toBytes() / 1024 / 1024 / 1024)
+    def mem = Math.round(task.memory.toBytes() / 1024 / 1024 / 1024) - 2
     """
-    supernova run --id=${id}_stage --fastqs=${fastqs} --localcores=${task.cpus} --localmem=${mem} ${tenx_options} ${supernova_options}
-    rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}_stage/" ${id}
+    supernova run --id=${id} --fastqs=${fastqs} --localcores=${task.cpus} --localmem=${mem} ${tenx_options} ${supernova_options}
+    rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
     """
 }
 
@@ -95,7 +96,6 @@ process mkoutput {
     gzip -d ${asm}.fasta.gz
     """
 }
-
 /*
 process longranger {
     tag "${id}"
@@ -138,8 +138,6 @@ process busco {
     tag "${id}"
     publishDir "${params.outdir}/busco/", mode: 'copy'
 
-    //beforeScript 'source $BUSCO_SETUP'
-
     input:
     set val(id), file(asm) from supernova_asm2
 
@@ -147,7 +145,9 @@ process busco {
     file ("run_${id}/") into busco_results
 
     script:
+    // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
     """
+    if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
     BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
     """
 }
