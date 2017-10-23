@@ -4,9 +4,7 @@ vim: syntax=groovy
 -*- mode: groovy;-*-
 */
 
-
-//##### Parameters
-version = 0.3
+//##### Functions
 
 // Common options for both supernova and longranger
 def TenX_optional = {sample, lanes, indices, project->
@@ -24,6 +22,12 @@ def supernova_optional = {maxreads, bcfrac->
     bcfrac!=null ? str <<= "--bcfrac=${bcfrac} " : null
     return str
 }
+
+
+//##### Parameters
+version = 0.4
+def now = new Date()
+def timestamp = now.format("yyyyMMdd-HHmmss")
 
 samples = []
 if (params.samples == null) { //We don't have sample JSON/YAML file, just use cmd-line
@@ -45,13 +49,25 @@ for (sample in params.samples) {
     samples << s  
 }
 params.outdir="."
-params.BUSCOdata = "\$BUSCO_LINEAGE_SETS/eukaryota_odb9"
+params.fastqc = false
+params.mqc_config = "$baseDir/misc/multiqc_config.yaml"
+params.minsize = 1000
+params.assembly_project = "ns_assembly_${timestamp}"
 
+//Extra parameter evaluation
+for (sample in params.samples) {
+    assert sample.id.size() == sample.id.findAll(/[A-z0-9\\.\-]/).size() : "Illegal character(s) in sample ID: ${sample.id}."
+    assert new File(sample.fastqs).exists() : "Path not found ${sample.fastqs}"
+}
+assert new File(params.BUSCOdata).exists() : "Path not found ${params.BUSCOdata}"
 
 //###### Start
 log.info "     \\|/"
 log.info "  ----*----   N e u t r o n S t a r (${version})"
-log.info "     /|\\"
+log.info "     /|\\      run: ${timestamp}"
+log.info ""
+
+
 for (i in samples) {  
     log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
 }
@@ -61,6 +77,46 @@ Channel
     .from(samples)
     .into { supernova_input; longranger_input }
 
+process longranger {
+    tag "${id}"
+    publishDir "${params.outdir}/align/", mode: 'copy'
+    
+    when:
+    params.fastqc
+
+    input:
+    set val(id), val(fastqs), val(tenx_options), val(supernova_options) from longranger_input
+
+    output:
+    set val(id), file("${id}.fastq.gz") into fastqc_input
+    
+    script:
+    def mem = Math.round(task.memory.toBytes() / 1024 / 1024 / 1024) - 2
+    """
+    longranger basic --id=${id} --fastqs=${fastqs} --localcores=${task.cpus} --localmem=${mem} ${tenx_options}
+    mv ${id}/outs/barcoded.fastq.gz ${id}.fastq.gz
+    """
+}
+
+process fastqc {
+    tag "${id}"
+    publishDir "${params.outdir}/fastqc/", mode: 'copy'
+
+    when:
+    params.fastqc
+
+    input:
+    set val(id), val(fastq) from fastqc_input
+
+    output:
+    file "*_fastqc.{zip,html}" into fastqc_results
+
+    script:
+    """
+    fastqc -o . -q $fastq
+    """
+}
+
 process supernova {
     tag "${id}"
     publishDir "${params.outdir}/supernova/", mode: 'copy'
@@ -69,7 +125,7 @@ process supernova {
     set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
 
     output:
-    set val(id), file("${id}_supernova") into supernova_results
+    set val(id), file("${id}_supernova") into supernova_results, supernova_results2
 
     script:
     def mem = Math.round(task.memory.toBytes() / 1024 / 1024 / 1024) - 2
@@ -79,6 +135,7 @@ process supernova {
     """
 }
 
+
 process mkoutput {
     tag "${id}"
     publishDir "${params.outdir}/assemblies/", mode: 'copy'
@@ -87,34 +144,18 @@ process mkoutput {
     set val(id), file(supernova_folder) from supernova_results
 
     output:
-    set val(id), file("${id}.supernova.scf.fasta") into supernova_asm1, supernova_asm2
+    set val(id), file("${id}.fasta") into supernova_asm1, supernova_asm2
+    file "${id}.phased.fasta"
 
     script:
-    def asm = "${id}.supernova.scf"
     """
-    supernova mkoutput --asmdir=${supernova_folder}/outs/assembly --outprefix=${asm} --style=pseudohap
-    gzip -d ${asm}.fasta.gz
-    """
-}
-/*
-process longranger {
-    tag "${id}"
-    publishDir "${params.outdir}/align/${id}", mode: 'copy'
-
-    input:
-    set val(id), val(fastqs), val(tenx_options), val(supernova_options) from longranger_input
-
-    output:
-    set val(id), file("${id}.barcoded.R[12].fastq.gz") into longranger_fastq
-    
-    script:
-    def mem = Math.round(task.memory.toBytes() / 1024 / 1024 / 1024)
-    """
-    longranger basic --id=${id} --fastqs=${fastqs} --localcores=${task.cpus} --localmem=${mem} ${tenx_options}
-    pigz -d -c --processes ${task.cpus} ${id}/outs/barcoded.fastq.gz | paste - - - - - - - -  | tee >(cut -f 1-4 | tr "\t" "\n" | pigz --best --processes ${task.cpus} > ${id}.barcoded.R1.fastq.gz ) | cut -f 5-8 | tr "\t" "\n" | pigz --best --processes ${task.cpus} > ${id}.barcoded.R2.fastq.gz  
+    supernova mkoutput --asmdir=${supernova_folder}/outs/assembly --outprefix=${id} --style=pseudohap --minsize=${params.minsize}
+    supernova mkoutput --asmdir=${supernova_folder}/outs/assembly --outprefix=${id}.phased --style=megabubbles --minsize=${params.minsize}
+    gzip -d ${id}.fasta.gz
+    gzip -d ${id}.phased.fasta.gz
     """
 }
-*/
+
 process quast {
     tag "${id}"
     publishDir "${params.outdir}/quast/${id}", mode: 'copy'
@@ -128,7 +169,7 @@ process quast {
     script:
     def size_parameter = params.genomesize!=null ? "--est-ref-size ${params.genomesize}" : "" 
     """
-    quast.py -s ${size_parameter} --threads ${task.cpus} ${asm}
+    quast.py ${size_parameter} --threads ${task.cpus} ${asm}
     mv quast_results/latest/* .
     rm -r quast_results
     """
@@ -150,5 +191,25 @@ process busco {
     if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
     BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
     """
+}
+
+process multiqc {
+    publishDir "${params.outdir}/multiqc", mode: 'copy'
+
+    input:
+    file ('fastqc/*') from fastqc_results.flatten().toList()
+    file ('supernova/*') from supernova_results2.flatten().toList()
+    file ('busco/*') from busco_results.flatten().toList()
+    file ('quast/*') from quast_results.flatten().toList()
+
+    output:
+    file "*multiqc_report.html"
+    file "*_data"
+
+
+    script:
+    """
+    multiqc -i ${params.assembly_project} -f -s -m fastqc -m supernova -m busco -m quast --config ${params.mqc_config} .
+    """    
 }
 
