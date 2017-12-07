@@ -1,4 +1,4 @@
-# ![NGI-NeutronStar](docs/images/NGI-NeutronStar.png)
+# ![NGI-NeutronStar](docs/images/NGI-NeutronStar_logo.png)
 
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.25.1-brightgreen.svg)](https://www.nextflow.io/)
 
