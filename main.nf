@@ -174,6 +174,25 @@ for (i in samples) {
     log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
 }
 
+
+process software_versions {
+
+    output:
+        file 'software_versions_mqc.yaml' into software_versions_yaml
+
+    script:
+    """
+    echo $version > v_pipeline.txt
+    echo $workflow.nextflow.version > v_nextflow.txt
+    supernova run --version > v_supernova.txt
+    quast.py -v > v_quast.txt
+    multiqc --version > v_multiqc.txt
+    BUSCO.py -v 2> v_busco.txt
+    scrape_software_versions.py > software_versions_mqc.yaml
+    """
+}
+
+
 Channel
     .from(samples)
     .into { supernova_input; longranger_input }
@@ -230,11 +249,9 @@ if (params.full_output) {
 
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
-        file "v_supernova.txt" into v_supernova
 
         script:
         """
-        supernova run --version > v_supernova.txt
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         """
     }
@@ -249,11 +266,9 @@ if (params.full_output) {
 
         output:
         set val(id), file("{${id}/_*,${id}/*.tgz,${id}/outs,${id}/outs/*.*,${id}/outs/assembly/stats,${id}/outs/assembly/logs,${id}/outs/assembly/a.base/a.hbx,${id}/outs/assembly/a.base/a.inv,${id}/outs/assembly/a.base/final}") into supernova_results, supernova_results2
-        file "v_supernova.txt" into v_supernova
 
         script:
         """
-        supernova run --version > v_supernova.txt
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         """
     }
@@ -290,12 +305,10 @@ process quast {
 
     output:
     file("quast_results/latest/*") into quast_results
-    file("v_quast.txt") into v_quast
  
     script:
     def size_parameter = params.genomesize!=null ? "--est-ref-size ${params.genomesize}" : "" 
     """
-    quast.py -v > v_quast.txt
     quast.py ${size_parameter} --threads ${task.cpus} ${asm}
     """
 }
@@ -309,31 +322,12 @@ process busco {
 
     output:
     file ("run_${id}/") into busco_results
-    file "v_busco.txt" into v_busco
 
     script:
     // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
     """
     if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
-    BUSCO.py -v > v_busco.txt
     BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
-    """
-}
-
-process software_versions {
-
-    input:
-        file busco from v_busco
-        file quast from v_quast
-        file supernova from v_supernova
-    output:
-        file 'software_versions_mqc.yaml' into software_versions_yaml
-
-    script:
-    """
-    echo $version > v_pipeline.txt
-    echo $workflow.nextflow.version > v_nextflow.txt
-    scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
 
@@ -341,11 +335,11 @@ process multiqc {
     publishDir "${params.outdir}/multiqc"
 
     input:
-    file ('fastqc/*') from fastqc_results.flatten().toList()
+    file ('fastqc/') from fastqc_results.flatten().toList()
     file ('supernova/') from supernova_results2.flatten().toList()
-    file ('busco/*') from busco_results.flatten().toList()
-    file ('quast/*') from quast_results.flatten().toList()
-    file ('software_versions/*') from software_versions_yaml
+    file ('busco/') from busco_results.flatten().toList()
+    file ('quast/') from quast_results.flatten().toList()
+    file ('software_versions/') from software_versions_yaml.flatten().toList()
 
     output:
     file "*multiqc_report.html"
@@ -353,7 +347,6 @@ process multiqc {
 
     script:
     """
-    multiqc --version > v_multiqc.txt
     multiqc -i ${custom_runName} -f -s  --config ${params.mqc_config} .
     """    
 }

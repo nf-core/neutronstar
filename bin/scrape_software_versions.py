@@ -28,7 +28,7 @@ for k, v in regexes.items():
             match = re.search(v[1], versions)
             if match:
                 results[k] = "v{}".format(match.group(1))
-    except FileNotFoundError:
+    except IOError:
         pass
 
 # Dump to YAML
