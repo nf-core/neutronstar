@@ -265,11 +265,12 @@ if (params.full_output) {
         set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
 
         output:
-        set val(id), file("{${id}/_*,${id}/*.tgz,${id}/outs,${id}/outs/*.*,${id}/outs/assembly/stats,${id}/outs/assembly/logs,${id}/outs/assembly/a.base/a.hbx,${id}/outs/assembly/a.base/a.inv,${id}/outs/assembly/a.base/final}") into supernova_results, supernova_results2
+        set val(id), file("${id}_supernova") into supernova_results, supernova_results2
 
         script:
         """
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
+        rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
         """
     }
 
