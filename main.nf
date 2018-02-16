@@ -54,7 +54,7 @@ def helpMessage() {
  */
 
 // Pipeline version
-version = '0.4'
+version = '0.5dev'
 
 log.info "     \\|/"
 log.info "  ----*----   N e u t r o n S t a r (${version})"
@@ -85,6 +85,8 @@ def supernova_optional = {maxreads, bcfrac, nopreflight->
     return str
 }
 
+if(workflow.container == [:]) {println "No Docker: $workflow.container"}
+else {println "We have Docker: $workflow.container"}
 
 //##### Parameters
 params.name = false
@@ -168,7 +170,6 @@ summary['Script dir']     = workflow.projectDir
 summary['Config Profile'] = workflow.profile
 if(params.email) summary['E-mail Address'] = params.email
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
-
 
 for (i in samples) {  
     log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
@@ -270,10 +271,9 @@ if (params.full_output) {
         script:
         """
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
-        rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
+        rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
         """
     }
-
 
 }
 
@@ -314,22 +314,46 @@ process quast {
     """
 }
 
-process busco {
-    tag "${id}"
-    publishDir "${params.outdir}/busco/", mode: 'copy'
+if(workflow.container == [:]) { //BUSCO is installed on this system
+    process busco {
+        tag "${id}"
+        publishDir "${params.outdir}/busco/", mode: 'copy'
 
-    input:
-    set val(id), file(asm) from supernova_asm2
+        input:
+        set val(id), file(asm) from supernova_asm2
 
-    output:
-    file ("run_${id}/") into busco_results
+        output:
+        file ("run_${id}/") into busco_results
 
-    script:
-    // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
-    """
-    if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
-    BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
-    """
+        script:
+        // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
+        """
+        if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
+        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
+        """
+    }
+}
+else { // We assume we are running the ngi-neutronstar Docker/Singularity container
+    process busco_containerized {
+        tag "${id}"
+        publishDir "${params.outdir}/busco/", mode: 'copy'
+
+        input:
+        set val(id), file(asm) from supernova_asm2
+
+        output:
+        file ("run_${id}/") into busco_results
+
+        script:
+        """
+        mkdir busco_config; print_busco_config.py > busco_config/config.ini 
+        cp -r $baseDir/misc/augustus_config .
+        export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini
+        export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config
+        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
+        """
+    }
+
 }
 
 process multiqc {

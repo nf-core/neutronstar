@@ -7,7 +7,6 @@ LABEL authors="remi-andre.olsen@scilifelab.se" \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     unzip \
-    rsync \
     perl \
     build-essential \
     gcc \
@@ -34,6 +33,11 @@ RUN wget -O /opt/get-pip.py https://bootstrap.pypa.io/get-pip.py \
 
 
 # Install BUSCO v3
+# Usage notes:
+#   docker run -it -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar cp -r /root/augustus/config $PWD/augustus_config 
+#   docker run -it -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar cp -r /root/busco/config/config.ini.default $PWD/busco_config/config.ini
+#   docker run -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar /bin/bash -c "export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini; export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config; BUSCO.py --in ..."
+
 # install augustus
 RUN cd /root && wget -O - http://bioinf.uni-greifswald.de/augustus/binaries/augustus.current.tar.gz | tar zx && \
  cd augustus/ && make && make install
@@ -46,7 +50,7 @@ RUN cd /root && wget -O - https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/
  cp ncbi-blast*/bin/* /usr/bin/
 # install busco
 RUN cd /root && git clone http://gitlab.com/ezlab/busco && cd busco && python setup.py install && \ 
-    cp scripts/*.py /usr/bin && ln -s /usr/bin/run_BUSCO.py /usr/bin/BUSCO.py
+    cp scripts/*.py /usr/bin && ln -s /usr/bin/run_BUSCO.py /usr/bin/BUSCO.py && mkdir /usr/config
 
 # Install pip and Quast
 RUN pip install quast
@@ -56,11 +60,6 @@ RUN pip install multiqc
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1517526231&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE3NTI2MjMxfX19XX0_&Signature=YPI-AtARAhGsscWsbj5n8HJunYWTxyC1C9wo4YdwESDp97VfkSAqkmUYPnJQi0lnpTXzyFwc08p~LNb-RUCmD5T5gbQHJiLT8-x5LOCCC-s~NVMiLHA0HEBfSkKVL1lUwePIZ~TSWomgjZRUpLYVmUAumchBu4O2EC0s4WM0BBfwm~HEqrVtAxyENcWBEgeAzcnkgcK8cxVJPJ0DOLcRIX862AyxOxHGYYw2sY9afX4tlFOgNnHpVgiSbz7g55Bp7VoUDOy-p7x1qla23BEp1kQcl2yYVoMrnvCo-tUzHD1j9mqucAAaCWSFsMGjooqBRFE1jKFdh6SxWNUBza4A3A__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
+    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1518831346&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE4ODMxMzQ2fX19XX0_&Signature=SbhfrxsEZ4lqFZvKOMToSEi6yHpsOHl53JSzpU3Gc4cpKMqBhFGGbw9Zvo03mwGSQwx9dANJ8qgR8GwcBg90kwkKFh6KoVRjADQCDxhYl9EG9u3oOOZUDnIiuWbp-HRXXSiCL8Dd3dnrB0Wfn9nAc2FpmqI7FR~zXpLpnHChUPDHoi2MLN381xaPEaII3lJTncNLuWOLXXAVoSPRi~sRKOMN0KlbseyOC8v5LeiUHhcTWhuHFuWjlv8cIz5HBgJ9c7WjhORPWDAhFw748Z71yNwtO-BUAcseF2kAPrOM7t7euAaPISU8lU2Cwo1U-VQbRJUkQ0bR7EQPcakyWZV8ZA__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
     tar zx
 ENV PATH="/opt/supernova-2.0.0:$PATH"
-
-# Create mount points for UPPMAX folders
-RUN mkdir /pica /lupus /crex1 /crex2 /proj /scratch /sw /Users
-
-

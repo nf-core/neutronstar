@@ -4,10 +4,11 @@
 
 ### Introduction
 
-NGI-NeutronStar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data. It's developed and used at the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) at [SciLifeLab Stockholm](https://www.scilifelab.se/platforms/ngi/), Sweden.
+NGI-NeutronStar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data. It's developed and used at the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) at [SciLifeLab Stockholm](https://www.scilifelab.se/platforms/ngi/), Sweden. The pipeline uses [Nextflow](https://www.nextflow.io), a bioinformatics workflow tool.
 
-The pipeline uses [Nextflow](https://www.nextflow.io), a bioinformatics workflow tool. It pre-processes raw data from FastQ inputs, aligns the reads and performs extensive quality-control on the results.
+#### Disclaimer
 
+This software is in no way affiliated with nor endorsed by 10x Genomics.
 
 ### Usage instructions
 It is recommended that you start the pipeline inside a unix `screen` (or alternatively `tmux`). 
