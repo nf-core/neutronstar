@@ -347,7 +347,7 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
         script:
         """
         mkdir busco_config; print_busco_config.py > busco_config/config.ini 
-        cp -r $baseDir/misc/augustus_config .
+        tar xfj $baseDir/misc/augustus_config.tar.bz2
         export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini
         export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config
         BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
