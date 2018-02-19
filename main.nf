@@ -85,8 +85,6 @@ def supernova_optional = {maxreads, bcfrac, nopreflight->
     return str
 }
 
-if(workflow.container == [:]) {println "No Docker: $workflow.container"}
-else {println "We have Docker: $workflow.container"}
 
 //##### Parameters
 params.name = false

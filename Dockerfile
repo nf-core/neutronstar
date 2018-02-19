@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     unzip \
     perl \
+    rsync \
     build-essential \
     gcc \
     cmake \
@@ -36,6 +37,7 @@ RUN wget -O /opt/get-pip.py https://bootstrap.pypa.io/get-pip.py \
 # Usage notes:
 #   docker run -it -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar cp -r /root/augustus/config $PWD/augustus_config 
 #   docker run -it -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar cp -r /root/busco/config/config.ini.default $PWD/busco_config/config.ini
+    # Edit config.ini to output and tmp dirs to your bound folder (/your_mnt/ or wherever)
 #   docker run -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar /bin/bash -c "export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini; export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config; BUSCO.py --in ..."
 
 # install augustus
@@ -60,6 +62,6 @@ RUN pip install multiqc
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1518839324&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE4ODM5MzI0fX19XX0_&Signature=HSRudLVmXMJG~S9TAOjrfEqwFo2AUz8Rw4aHhHyxHboxb26ho-ydpn-kiAef7FZTEYAJsBVuL2tBkx8R6BGnw6MLt1Y-C43On9J45vGLuox5mHUu8qNj5HN0CE7ijvZlRVOrETJgpscg44uf1-fd~-gjigO7XyeJOH6MCimRCQwVXJa3TVU2LSj0IGVGZEHJPARfXE6SI~Phaar2CUOTcKOT2Gn1DjyIWTKhShWMLHn79bwVAzrJvgCDVxj4zt3vvKsjKTz2Z4eGK-QKS0TcwZE9KLd1sz~W-zJQSadLRltmNJT3YcNTW11J4A3YC~PMoW~mnFP5rzicIhscBExLog__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
+    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519080813&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5MDgwODEzfX19XX0_&Signature=ITxNPiacXHl~k~eXYo1Vh6PUJLxnjPSwHWsyn45OG6t~iasxuCwSo8mGw69R4vKrfMpUf0j5TpwNuZZ9IOh2qhggTKQHUTawVAeDDIQZ90B-A1auu7WpxUVXrLfh7NBhKbM0XN08QsYMYGLjkAtTQk9L7QmWyNXfD28HGUs~wD1n3mw9He2X1JEZ6IIcUJHHX5D8jYOheDZFe-y08D5YJfgJyGyfQIx7SnA~w0Bd1vhOyU4QiVqe3h4O8qWK-35lLicjGwwd31-MheyEQ1IGmCRKd0aQPkTtEpWOJdx9X4vRDXwGmdJHIUYu5B~s96dX3qUEKDADoSygW1s6AtmTfw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
     tar zx
 ENV PATH="/opt/supernova-2.0.0:$PATH"
