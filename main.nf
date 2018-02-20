@@ -194,49 +194,8 @@ process software_versions {
 
 Channel
     .from(samples)
-    .into { supernova_input; longranger_input }
+    .into { supernova_input; }
 
-
-// Note: Defunct for now
-process longranger {
-    tag "${id}"
-    publishDir "${params.outdir}/align/", mode: 'copy'
-    
-    when:
-    params.fastqc
-
-    input:
-    set val(id), val(fastqs), val(tenx_options), val(supernova_options) from longranger_input
-
-    output:
-    set val(id), file("${id}.fastq.gz") into fastqc_input
-    
-    script:
-    """
-    longranger basic --id=${id} --fastqs=${fastqs} --localcores=${task.cpus} ${tenx_options}
-    mv ${id}/outs/barcoded.fastq.gz ${id}.fastq.gz
-    """
-}
-
-// Note: Defunct for now
-process fastqc {
-    tag "${id}"
-    publishDir "${params.outdir}/fastqc/", mode: 'copy'
-
-    when:
-    params.fastqc
-
-    input:
-    set val(id), val(fastq) from fastqc_input
-
-    output:
-    file "*_fastqc.{zip,html}" into fastqc_results
-
-    script:
-    """
-    fastqc -o . -q $fastq
-    """
-}
 
 if (params.full_output) {
     process supernova_full {
