@@ -57,7 +57,7 @@ def helpMessage() {
 version = '0.5dev'
 
 log.info "     \\|/"
-log.info "  ----*----   N e u t r o n S t a r (${version})"
+log.info "  ----*----   N G I - N e u t r o n S t a r (${version})"
 log.info "     /|\\"   
 log.info ""
 // Show help emssage
@@ -288,8 +288,8 @@ process mkoutput {
 
     script:
     """
-    supernova mkoutput --asmdir=outs/assembly --outprefix=${id} --style=pseudohap --minsize=${params.minsize}
-    supernova mkoutput --asmdir=outs/assembly --outprefix=${id}.phased --style=megabubbles --minsize=${params.minsize}
+    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id} --style=pseudohap --minsize=${params.minsize}
+    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id}.phased --style=megabubbles --minsize=${params.minsize}
     gzip -d ${id}.fasta.gz
     gzip -d ${id}.phased.fasta.gz
     """
@@ -338,6 +338,8 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
 
         input:
         set val(id), file(asm) from supernova_asm2
+        env BUSCO_CONFIG_FILE from "\$PWD/busco_config/config.ini"
+        env AUGUSTUS_CONFIG_PATH from "\$PWD/augustus_config"
 
         output:
         file ("run_${id}/") into busco_results
@@ -346,8 +348,6 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
         """
         mkdir busco_config; print_busco_config.py > busco_config/config.ini 
         tar xfj $baseDir/misc/augustus_config.tar.bz2
-        export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini
-        export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config
         BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
         """
     }
