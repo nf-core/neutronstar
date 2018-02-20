@@ -194,7 +194,7 @@ process software_versions {
 
 Channel
     .from(samples)
-    .into { supernova_input; }
+    .set { supernova_input }
 
 
 if (params.full_output) {
@@ -317,7 +317,6 @@ process multiqc {
     publishDir "${params.outdir}/multiqc"
 
     input:
-    file ('fastqc/') from fastqc_results.flatten().toList()
     file ('supernova/') from supernova_results2.flatten().toList()
     file ('busco/') from busco_results.flatten().toList()
     file ('quast/') from quast_results.flatten().toList()
