@@ -16,11 +16,11 @@ path = /usr/bin/
 
 [augustus]
 # path to augustus
-path = /usr/local/augustus/bin/
+path = /opt/augustus/bin/
 
 [etraining]
 # path to augustus etraining
-path = /usr/local/augustus/bin/
+path = /opt/augustus/bin/
 
 # path to augustus perl scripts, redeclare it for each new script
 [gff2gbSmallDNA.pl]

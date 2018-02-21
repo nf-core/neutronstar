@@ -41,18 +41,18 @@ RUN wget -O /opt/get-pip.py https://bootstrap.pypa.io/get-pip.py \
 #   docker run -v /your_mnt/:/your_mnt/ remiolsen/ngi-neutronstar /bin/bash -c "export BUSCO_CONFIG_FILE=$PWD/busco_config/config.ini; export AUGUSTUS_CONFIG_PATH=$PWD/augustus_config; BUSCO.py --in ..."
 
 # install augustus
-RUN cd /usr/local && wget -O - http://bioinf.uni-greifswald.de/augustus/binaries/augustus.current.tar.gz | tar zx && \
+RUN cd /opt && wget -O - http://bioinf.uni-greifswald.de/augustus/binaries/augustus.current.tar.gz | tar zx && \
  cd augustus/ && make && make install
-RUN cp -r /usr/local/augustus/scripts/* /usr/bin/
+RUN cp -r /opt/augustus/scripts/* /usr/bin/
 # install hmmer
-RUN cd /usr/local && wget -O - http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz | tar zx && \
+RUN cd /opt && wget -O - http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz | tar zx && \
  cd hmmer-3.1b2-linux-intel-x86_64/ && ./configure && make && make install
 # install ncbi blast
-RUN cd /usr/local && wget -O - https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.7.1+-x64-linux.tar.gz | tar zx  && \
+RUN cd /opt && wget -O - https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.7.1+-x64-linux.tar.gz | tar zx  && \
  cp ncbi-blast*/bin/* /usr/bin/
 # install busco
-RUN cd /usr/local && git clone http://gitlab.com/ezlab/busco && cd busco && python setup.py install && \ 
-    cp scripts/*.py /usr/bin && ln -s /usr/bin/run_BUSCO.py /usr/bin/BUSCO.py && mkdir /usr/config
+RUN cd /opt && git clone http://gitlab.com/ezlab/busco && cd busco && python setup.py install && \ 
+    cp scripts/*.py /usr/bin && ln -s /usr/bin/run_BUSCO.py /usr/bin/BUSCO.py 
 
 # Install Quast
 RUN pip install quast
@@ -62,6 +62,6 @@ RUN pip install multiqc
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519162071&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5MTYyMDcxfX19XX0_&Signature=opqv1hxn-YybhvAAyDMKkVoj5AJXKQY7x6XIqfjtw9YWamu~Nq9EdHmsIZJwwgYTojlzpsmhKQf1NReV6EeTlQT2jBhJTeQtLAhmbek2mKXpiFKdjzd90bsCwoGVt6d4XzFLaHW5K-tg5P0drpuMq8zfNTeU~lhPrsd954peZraFOIpWAuhNwczUJaO4CtILd-5ZgdYFHnyNX6OOYXgnoIhzrMd57wPMREAss26UDgjBBBU2s7wik7iIk~avjGkmKPhGLDtysAxaHDP47BkuoyA2rq722fffMUwLzsZvYCYwFNUXtMSwEmzJbvPph4NHKqoECJOzKOVw5cOvZJ7JEw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
+    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519255727&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5MjU1NzI3fX19XX0_&Signature=iWx405JRIZhm4uXZ7JoQf2Nrofp7-ceClTMH-9mObAiBrdWccikROSMa1IFhg6ODG3he9oC9x62nAPIh4VJxn4HWEnM8wM5zwL8KPx~WMfjYXwtLnvoKpF7-spzqzFVaXwrXdJAkUmCitcCl3D1HzXlSN8J93fGhyYjhJMM3EmzmXhcmbhz3auh2W38i8XSnGIF--EYRo1Kf6rCBxjie36FVAQkR2hPxYCsPcM~LJfuxFoUg5c77MEWuzqiMSaWkaihZlwLm0FSAIuTjiuBOnbAFiGUJsZTQXeMyL~8fbh~15GYWQVs2tIb6abaBp2U4fZWKuGx6ZuhpF1lhGjgOBA__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
     tar zx
 ENV PATH="/opt/supernova-2.0.0:$PATH"
