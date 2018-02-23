@@ -36,6 +36,9 @@ def helpMessage() {
       --project                     [Supernova parameter]
       --maxreads                    [Supernova parameter]
       --nopreflight                 [Supernova parameter]
+      --max_cpus                    Amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16 for hpc config)
+      --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
+      --max_time                    Amount of time for the job scheduler to request (in hours). (default=120)
       --full_output                 Keep all the files that are output from Supernova. By default only the final assembly graph is kept, as it is needed to make the output fasta files.
 
 
@@ -143,7 +146,7 @@ assert new File(params.BUSCOdata).exists() : "Path not found ${params.BUSCOdata}
 nf_required_version = '0.25.0'
 try {
     if( ! nextflow.version.matches(">= $nf_required_version") ){
-        throw GroovyException('Nextflow version too old')
+        throw new RuntimeException('Nextflow version too old')
     }
 } catch (all) {
     log.error "====================================================\n" +
@@ -387,7 +390,7 @@ workflow.onComplete {
     // Send the HTML e-mail
     if (params.email) {
         try {
-          if( params.plaintext_email ){ throw GroovyException('Send plaintext e-mail, not HTML') }
+          if( params.plaintext_email ){ throw new RuntimeException('Send plaintext e-mail, not HTML') }
           // Try to send HTML e-mail using sendmail
           [ 'sendmail', '-t' ].execute() << sendmail_html
           log.info "[NGI-NeutronStar] Sent summary e-mail to $params.email (sendmail)"
