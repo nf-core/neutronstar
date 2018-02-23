@@ -44,6 +44,8 @@ RUN wget -O /opt/get-pip.py https://bootstrap.pypa.io/get-pip.py \
 RUN cd /opt && wget -O - http://bioinf.uni-greifswald.de/augustus/binaries/augustus.current.tar.gz | tar zx && \
  cd augustus/ && make && make install && chmod -R 755 /opt/augustus
 RUN cp -r /opt/augustus/scripts/* /usr/bin/
+ENV PATH="/opt/augustus/bin:$PATH"
+
 # install hmmer
 RUN cd /opt && wget -O - http://eddylab.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz | tar zx && \
  cd hmmer-3.1b2-linux-intel-x86_64/ && ./configure && make && make install
@@ -62,6 +64,6 @@ RUN pip install multiqc
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519266022&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5MjY2MDIyfX19XX0_&Signature=AY~ZDIUSC7N8zHr6Yv0WacAdSW3rZls2qlioqBy1j5kcYPnc-t6o-~K45tOZYkqHXAHM0JnhjVjOsEvd5cY8YlxI~854C2ONmSDHMoj6~uibqukEyGywD81TKpBGZyR09CboYLVpoWaonyhyg4nOBbJ76OuS1PgJqzefNvUBosDsW5ryf5fUe7vC2WVrO7NUg~YV2DoZ~9~hmUfu88lQmBnOu8RiX9WbUzxdb5yPt-g6rvo1ZgzZt4~GI~T7X29H51AD6gbVhQcNNJ2rZHyoF2MPO5fZOBVu6dREqrSsRuhCQXB1GfwyBI-y6NDu2J3D3fY7RBpLbxfo58LvaNfqEA__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
+    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519430505&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5NDMwNTA1fX19XX0_&Signature=AncCj04liarK6ACmN9SnYDIu2oTCPY02wHT9EmQLB4lsRKU6spCO0GXJX0HHl3WWRAVbsZWs55YoUlJm-GjtUGONlXlbzF-s~jKmI~p~vDh7RJ~g5OWHhbkalploRP4HDgxEiCrS~7WHoKP4JjIxpgE0TyVytN0pVQHuhC4NWa8rbNuchdDN6JeYl19TSaUxARRw21XyE9GlzvIx~VzD05rY898YaOWJDipEHtqlKQJFnH9TCYd3rNhaMhQvXDRkobVJnynXfecFe9ejkgrZvXAcLHKMhQoNdUcaf4Gmp-pIgcGo2Bm2FJyuo5DtOocDapgkEh4ZmJV405eNr7K3hQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
     tar zx
 ENV PATH="/opt/supernova-2.0.0:$PATH"
