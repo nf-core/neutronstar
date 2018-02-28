@@ -98,6 +98,9 @@ params.fastqc = false
 params.mqc_config = "$baseDir/misc/multiqc_config.yaml"
 params.minsize = 1000
 params.full_output = false
+params.BUSCOfolder = "$baseDir/data"
+def buscoPath = "${params.BUSCOfolder}/${params.BUSCOdata}"
+
 
 // Has the run name been specified by the user?
 //  this has the bonus effect of catching both -name and --name
@@ -134,12 +137,13 @@ for (sample in params.samples) {
     samples << s  
 }
 
+
 //Extra parameter evaluation
 for (sample in params.samples) {
     assert sample.id.size() == sample.id.findAll(/[A-z0-9\\.\-]/).size() : "Illegal character(s) in sample ID: ${sample.id}."
     assert new File(sample.fastqs).exists() : "Path not found ${sample.fastqs}"
 }
-assert new File(params.BUSCOdata).exists() : "Path not found ${params.BUSCOdata}"
+assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
 
 // Check that Nextflow version is up to date enough
 // try / throw / catch works for NF versions < 0.25 when this was implemented
@@ -289,7 +293,7 @@ if(workflow.container == [:]) { //BUSCO is installed on this system
         // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
         """
         if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
-        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
+        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
         """
     }
 }
@@ -310,7 +314,7 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
         """
         mkdir busco_config; print_busco_config.py > busco_config/config.ini 
         tar xfj $baseDir/misc/augustus_config.tar.bz2
-        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${params.BUSCOdata}
+        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
         """
     }
 
