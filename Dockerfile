@@ -60,10 +60,10 @@ RUN cd /opt && git clone http://gitlab.com/ezlab/busco && cd busco && python set
 RUN pip install quast
 
 # Install MultiQC
-RUN pip install multiqc
+RUN pip install git+https://github.com/ewels/MultiQC.git 
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519430505&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5NDMwNTA1fX19XX0_&Signature=AncCj04liarK6ACmN9SnYDIu2oTCPY02wHT9EmQLB4lsRKU6spCO0GXJX0HHl3WWRAVbsZWs55YoUlJm-GjtUGONlXlbzF-s~jKmI~p~vDh7RJ~g5OWHhbkalploRP4HDgxEiCrS~7WHoKP4JjIxpgE0TyVytN0pVQHuhC4NWa8rbNuchdDN6JeYl19TSaUxARRw21XyE9GlzvIx~VzD05rY898YaOWJDipEHtqlKQJFnH9TCYd3rNhaMhQvXDRkobVJnynXfecFe9ejkgrZvXAcLHKMhQoNdUcaf4Gmp-pIgcGo2Bm2FJyuo5DtOocDapgkEh4ZmJV405eNr7K3hQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
+    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519860750&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5ODYwNzUwfX19XX0_&Signature=ZYt159SwUfHlyaKKJbIW-Moi8ZgJ9O-2F3IjKZJLM6chTlXQlJgbv7kJn1UEMjWcu3S6dU1Vo8xEp4xxs3c~xQ7-OjWw5UEFIq0vwX~MPybJhV1Lw9aea6ITkJCbCYg96yRJy9DzbTN4KQVqo1qpKeAmg03ei-aKAWBvvbvyfQvjqLLX-6ecYb5ARjYqLMgCyunjyOpalHlUYbIjoGTKrhzkFT1-lrnc3q9Ng9B4SGPxm~6rm3diO8dgHjjUjLHnJtbEp9o4YaqCpJRFtyBz7~YH4Stj9UgjFHukI8FZtK3BFGSvIHSe-JD1Jt~Zop-IlInPbCf-vGgQStFbX3AQdQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
     tar zx
 ENV PATH="/opt/supernova-2.0.0:$PATH"
