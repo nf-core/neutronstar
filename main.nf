@@ -27,6 +27,7 @@ def helpMessage() {
       --fastqs                      [Supernova parameter]
       --genomesize                  The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
       -profile                      Hardware config to use. docker / hpc
+      --BUSCOdata                   The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
     Options:
       --sample                      [Supernova parameter]
@@ -36,16 +37,18 @@ def helpMessage() {
       --project                     [Supernova parameter]
       --maxreads                    [Supernova parameter]
       --nopreflight                 [Supernova parameter]
+      --minsize                     [Supernova mkdoutput parameter]
       --max_cpus                    Amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16 for hpc config)
       --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
       --max_time                    Amount of time for the job scheduler to request (in hours). (default=120)
       --full_output                 Keep all the files that are output from Supernova. By default only the final assembly graph is kept, as it is needed to make the output fasta files.
+      -process.clusterOptions       The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
 
 
     Other options:
       --outdir                      The output directory where the results will be saved
       --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
-      -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
+      -name                         Name for the pipeline run. If not specified, the pipeline will automatically generate one from the uuid (i.e. nonsense).
       -params-file                  Give the arguments for this nextflow run as a structured JSON/YAML file
     """.stripIndent()
 }
@@ -94,7 +97,6 @@ params.name = false
 params.email = false
 params.plaintext_email = false
 params.outdir="."
-params.fastqc = false
 params.mqc_config = "$baseDir/misc/multiqc_config.yaml"
 params.minsize = 1000
 params.full_output = false
