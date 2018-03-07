@@ -5,17 +5,18 @@
 ## Table of Contents
 
 1. [Introduction](README.md#introduction)
-  * [Disclaimer](README.md#disclaimer)
+   * [Disclaimer](README.md#disclaimer)
 2. [Installation](README.md#installation)
-  * [Singularity](README.md#singularity)
-  * [Busco data](README.md#busco-data)
+   * [Singularity](README.md#singularity)
+   * [Busco data](README.md#busco-data)
 3. [Usage instuctions](README.md#usage-instructions)
-  * [Single assembly](README.md#single-assembly)
-  * [Multiple assemblies](README.md#multiple-assemblies)
-  * [Advanced usage](README.md#advanced-usage)
+   * [Single assembly](README.md#single-assembly)
+   * [Multiple assemblies](README.md#multiple-assemblies)
+   * [Advanced usage](README.md#advanced-usage)
 4. [Pipeline overview](README.md#pipeline-overview)
 5. [Credits](README.md#pipeline-overview)
 
+---------
 
 ### Introduction
 
@@ -84,6 +85,8 @@ python busco_data.py download minimal
 
 ```
 
+---------
+
 ### Usage instructions
 It is recommended that you start the pipeline inside a unix `screen` (or alternatively `tmux`). 
 
@@ -123,10 +126,12 @@ Run nextflow using `nextflow run -profile -params-file sample_config.yaml /path/
 
 If not specifying the option `-profile` it will use a default one that is suitable to testing the pipeline on a typical laptop computer (using the test dataset included with the Supernova package). In a high-performance computing environment (and with real data) you should specify one of the `hpc` profiles. For instance for a compute cluster with the [Slurm](https://slurm.schedmd.com/documentation.html) job scheduler and Singularity version >= 2.4 installed, `hpc_singularity_slurm`. 
 
+---------
 
 ### Pipeline overview
 ![NGI-NeutronStarChart](docs/images/NGI-NeutronStar_chart.png)
 
+---------
 
 ### Credits
 These scripts were written for use at the [National Genomics Infrastructure](https://portal.scilifelab.se/genomics/) at [SciLifeLab](http://www.scilifelab.se/) in Stockholm, Sweden. Written by Remi-Andre Olsen (@remiolsen).
