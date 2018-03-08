@@ -193,7 +193,7 @@ process software_versions {
     echo $version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     supernova run --version > v_supernova.txt
-    quast.py -v > v_quast.txt
+    quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
     BUSCO.py -v 2> v_busco.txt
     scrape_software_versions.py > software_versions_mqc.yaml
