@@ -64,6 +64,6 @@ RUN pip install git+https://github.com/ewels/MultiQC.git
 
 # Download and install Supernova (Note! this link will expire)
 RUN cd /opt && \
-    wget -O - supernova-2.0.0.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.0.tar.gz?Expires=1519860750&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjAudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTE5ODYwNzUwfX19XX0_&Signature=ZYt159SwUfHlyaKKJbIW-Moi8ZgJ9O-2F3IjKZJLM6chTlXQlJgbv7kJn1UEMjWcu3S6dU1Vo8xEp4xxs3c~xQ7-OjWw5UEFIq0vwX~MPybJhV1Lw9aea6ITkJCbCYg96yRJy9DzbTN4KQVqo1qpKeAmg03ei-aKAWBvvbvyfQvjqLLX-6ecYb5ARjYqLMgCyunjyOpalHlUYbIjoGTKrhzkFT1-lrnc3q9Ng9B4SGPxm~6rm3diO8dgHjjUjLHnJtbEp9o4YaqCpJRFtyBz7~YH4Stj9UgjFHukI8FZtK3BFGSvIHSe-JD1Jt~Zop-IlInPbCf-vGgQStFbX3AQdQ__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" | \
-    tar zx
+    wget -O supernova-2.0.1.tar.gz "http://cf.10xgenomics.com/releases/assembly/supernova-2.0.1.tar.gz?Expires=1523662164&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cDovL2NmLjEweGdlbm9taWNzLmNvbS9yZWxlYXNlcy9hc3NlbWJseS9zdXBlcm5vdmEtMi4wLjEudGFyLmd6IiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNTIzNjYyMTY0fX19XX0_&Signature=bgRbPwzhv2H1phlr5LulVa8OJ43KbYZfL7nx1ZHfHs8yYkxTPXmCIsFEiloe7VjSI8LqW9uhKucOtoBJWaTgnWeLj7Vo0qvm2SEPWPPkSaD8TOaXKrPpnqg6XSnlCXxFAIxpIzlmov3Y8A9IqIY75GAl5iGqmw1DvKxF5V5lgEGgC~glcB2PpGib69lKy-9nUi~JiSpbFC3JaRGbrj5wY8GvsCil8FkfJUKqdLRRvbeNnpjCDrSd4hpAREUUQq06HjZsycg0xHyLApqNFp4sRxdWMhjwS-CoU88eUUmopa1wdmr5p-sTM9aMiXUNQFbF2kJOv1Szz6tr~S2Gyw2IAw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA" && \
+    tar zxf supernova-2.0.1.tar.gz && rm supernova-2.0.1.tar.gz
 ENV PATH="/opt/supernova-2.0.0:$PATH"
