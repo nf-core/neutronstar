@@ -60,10 +60,9 @@ def helpMessage() {
  */
 
 // Pipeline version
-version = '0.5dev'
 
 log.info "     \\|/"
-log.info "  ----*----   N G I - N e u t r o n S t a r (${version})"
+log.info "  ----*----   N G I - N e u t r o n S t a r (${params.version})"
 log.info "     /|\\"   
 log.info ""
 // Show help emssage
@@ -93,14 +92,6 @@ def supernova_optional = {maxreads, bcfrac, nopreflight->
 
 
 //##### Parameters
-params.name = false
-params.email = false
-params.plaintext_email = false
-params.outdir="."
-params.mqc_config = "$baseDir/misc/multiqc_config.yaml"
-params.minsize = 1000
-params.full_output = false
-params.BUSCOfolder = "$baseDir/data"
 def buscoPath = "${params.BUSCOfolder}/${params.BUSCOdata}"
 
 
@@ -149,9 +140,8 @@ assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
 
 // Check that Nextflow version is up to date enough
 // try / throw / catch works for NF versions < 0.25 when this was implemented
-nf_required_version = '0.25.0'
 try {
-    if( ! nextflow.version.matches(">= $nf_required_version") ){
+    if( ! nextflow.version.matches(">= $params.nf_required_version") ){
         throw new RuntimeException('Nextflow version too old')
     }
 } catch (all) {
@@ -323,7 +313,7 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
 }
 
 process multiqc {
-    publishDir "${params.outdir}/multiqc"
+    publishDir "${params.outdir}/multiqc", mode: 'copy'
 
     input:
     file ('supernova/') from supernova_results2.flatten().toList()
