@@ -5,7 +5,7 @@ vim: syntax=groovy
 ========================================================================================
                          NGI-NeutronStar
 ========================================================================================
- NGI-NeutronStar Analysis Pipeline. 
+ NGI-NeutronStar Analysis Pipeline.
  #### Homepage / Documentation
  https://github.com/scilifelab/NGI-NeutronStar
  #### Authors
@@ -63,7 +63,7 @@ def helpMessage() {
 
 log.info "     \\|/"
 log.info "  ----*----   N G I - N e u t r o n S t a r (${params.version})"
-log.info "     /|\\"   
+log.info "     /|\\"
 log.info ""
 // Show help emssage
 params.help = false
@@ -119,7 +119,7 @@ if (params.samples == null) { //We don't have sample JSON/YAML file, just use cm
 
 params.samples = []
 
-for (sample in params.samples) { 
+for (sample in params.samples) {
     assert sample.id != null : "Error in input parameter file"
     assert sample.fastqs != null : "Error in input parameter file"
     s = []
@@ -127,7 +127,7 @@ for (sample in params.samples) {
     s << sample.fastqs
     s << TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
     s << supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight)
-    samples << s  
+    samples << s
 }
 
 
@@ -168,27 +168,10 @@ summary['Config Profile'] = workflow.profile
 if(params.email) summary['E-mail Address'] = params.email
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
 
-for (i in samples) {  
+for (i in samples) {
     log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
 }
 
-
-process software_versions {
-
-    output:
-        file 'software_versions_mqc.yaml' into software_versions_yaml
-
-    script:
-    """
-    echo $version > v_pipeline.txt
-    echo $workflow.nextflow.version > v_nextflow.txt
-    supernova run --version > v_supernova.txt
-    quast.py -v &> v_quast.txt
-    multiqc --version > v_multiqc.txt
-    BUSCO.py -v 2> v_busco.txt
-    scrape_software_versions.py > software_versions_mqc.yaml
-    """
-}
 
 
 Channel
@@ -206,9 +189,11 @@ if (params.full_output) {
 
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
+        file("v_supernova.txt") into v_supernova
 
         script:
         """
+        supernova run --version > v_supernova.txt
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         """
     }
@@ -223,10 +208,12 @@ if (params.full_output) {
 
         output:
         set val(id), file("${id}_supernova") into supernova_results, supernova_results2
+        file("v_supernova.txt") into v_supernova
 
         script:
         """
-        supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
+        supernova run --version > v_supernova.txt
+        supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options} --localmem 2
         rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
         """
     }
@@ -262,9 +249,9 @@ process quast {
 
     output:
     file("quast_results/latest/*") into quast_results
- 
+
     script:
-    def size_parameter = params.genomesize!=null ? "--est-ref-size ${params.genomesize}" : "" 
+    def size_parameter = params.genomesize!=null ? "--est-ref-size ${params.genomesize}" : ""
     """
     quast.py ${size_parameter} --threads ${task.cpus} ${asm}
     """
@@ -285,7 +272,7 @@ if(workflow.container == [:]) { //BUSCO is installed on this system
         // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
         """
         if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
-        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
+        run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
         """
     }
 }
@@ -304,22 +291,41 @@ else { // We assume we are running the ngi-neutronstar Docker/Singularity contai
 
         script:
         """
-        mkdir busco_config; print_busco_config.py > busco_config/config.ini 
+        mkdir busco_config; print_busco_config.py > busco_config/config.ini
         tar xfj $baseDir/misc/augustus_config.tar.bz2
-        BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
+        run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
         """
     }
 
+}
+
+
+process software_versions {
+
+    input:
+      file "v_supernova.txt" from v_supernova
+    output:
+        file 'software_versions_mqc.yaml' into software_versions_yaml
+
+    script:
+    """
+    echo $params.version > v_pipeline.txt
+    echo $workflow.nextflow.version > v_nextflow.txt
+    quast.py -v &> v_quast.txt
+    multiqc --version > v_multiqc.txt
+    BUSCO.py -v 2> v_busco.txt
+    scrape_software_versions.py > software_versions_mqc.yaml
+    """
 }
 
 process multiqc {
     publishDir "${params.outdir}/multiqc", mode: 'copy'
 
     input:
-    file ('supernova/') from supernova_results2.flatten().toList()
-    file ('busco/') from busco_results.flatten().toList()
-    file ('quast/') from quast_results.flatten().toList()
-    file ('software_versions/') from software_versions_yaml.flatten().toList()
+    file ('supernova/') from supernova_results2.toList()
+    file ('busco/') from busco_results.toList()
+    file ('quast/*') from quast_results.toList()
+    file ('software_versions/') from software_versions_yaml.toList()
 
     output:
     file "*multiqc_report.html"
@@ -328,7 +334,7 @@ process multiqc {
     script:
     """
     multiqc -i ${custom_runName} -f -s  --config ${params.mqc_config} .
-    """    
+    """
 }
 
 
