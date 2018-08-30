@@ -213,7 +213,7 @@ if (params.full_output) {
         script:
         """
         supernova run --version > v_supernova.txt
-        supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options} --localmem 2
+        supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
         """
     }
