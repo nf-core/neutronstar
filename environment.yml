@@ -6,4 +6,4 @@ channels:
 dependencies:
   - bioconda::busco
   - bioconda::multiqc=1.6
-  - bioconda::quast
+  - bioconda::quast=4.6.1
