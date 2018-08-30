@@ -313,7 +313,7 @@ process software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
-    BUSCO.py -v 2> v_busco.txt
+    run_BUSCO.py -v 2> v_busco.txt
     scrape_software_versions.py > software_versions_mqc.yaml
     """
 }
