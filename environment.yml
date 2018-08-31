@@ -4,6 +4,5 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - bioconda::busco
+  - bioconda::busco=3.0.2
   - bioconda::multiqc=1.6
-  - bioconda::quast=4.6.1
