@@ -14,4 +14,6 @@ Bootstrap:docker
 
 %post
     /opt/conda/bin/conda env create -f /environment.yml
+    apt-get install -y --no-install-recommends g++ make
+    /opt/conda/bin/pip install quast
     /opt/conda/bin/conda clean -a
