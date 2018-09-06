@@ -257,47 +257,27 @@ process quast {
     """
 }
 
-if(workflow.container == [:]) { //BUSCO is installed on this system
-    process busco {
-        tag "${id}"
-        publishDir "${params.outdir}/busco/", mode: 'copy'
 
-        input:
-        set val(id), file(asm) from supernova_asm2
+process busco {
+    tag "${id}"
+    publishDir "${params.outdir}/busco/", mode: 'copy'
 
-        output:
-        file ("run_${id}/") into busco_results
+    input:
+    set val(id), file(asm) from supernova_asm2
+    env AUGUSTUS_CONFIG_PATH from "\$PWD/augustus_config"
 
-        script:
-        // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
-        """
-        if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
-        run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
-        """
-    }
+    output:
+    file ("run_${id}/") into busco_results
+
+    script:
+    // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
+    """
+    tar xfj $baseDir/misc/augustus_config.tar.bz2
+    if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
+    run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
+    """
 }
-else { // We assume we are running the ngi-neutronstar Docker/Singularity container
-    process busco_containerized {
-        tag "${id}"
-        publishDir "${params.outdir}/busco/", mode: 'copy'
 
-        input:
-        set val(id), file(asm) from supernova_asm2
-        env BUSCO_CONFIG_FILE from "\$PWD/busco_config/config.ini"
-        env AUGUSTUS_CONFIG_PATH from "\$PWD/augustus_config"
-
-        output:
-        file ("run_${id}/") into busco_results
-
-        script:
-        """
-        mkdir busco_config; print_busco_config.py > busco_config/config.ini
-        tar xfj $baseDir/misc/augustus_config.tar.bz2
-        run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
-        """
-    }
-
-}
 
 
 process software_versions {
@@ -322,9 +302,9 @@ process multiqc {
     publishDir "${params.outdir}/multiqc", mode: 'copy'
 
     input:
-    file ('supernova/') from supernova_results2.toList()
-    file ('busco/') from busco_results.toList()
-    file ('quast/*') from quast_results.toList()
+    file ('supernova/') from supernova_results2.collect()
+    file ('busco/') from busco_results.collect()
+    file ('quast/*') from quast_results.collect()
     file ('software_versions/') from software_versions_yaml.toList()
 
     output:
