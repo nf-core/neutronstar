@@ -189,11 +189,9 @@ if (params.full_output) {
 
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
-        file("v_supernova.txt") into v_supernova
 
         script:
         """
-        supernova run --version > v_supernova.txt
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         """
     }
@@ -208,11 +206,9 @@ if (params.full_output) {
 
         output:
         set val(id), file("${id}_supernova") into supernova_results, supernova_results2
-        file("v_supernova.txt") into v_supernova
 
         script:
         """
-        supernova run --version > v_supernova.txt
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
         rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
         """
@@ -278,14 +274,24 @@ process busco {
     """
 }
 
+process supernova_version {
 
+    output:
+    file("v_supernova.txt") into v_supernova
+
+    script:
+    """
+    supernova run --version > v_supernova.txt
+    """
+
+}
 
 process software_versions {
 
     input:
       file "v_supernova.txt" from v_supernova
     output:
-        file 'software_versions_mqc.yaml' into software_versions_yaml
+      file 'software_versions_mqc.yaml' into software_versions_yaml
 
     script:
     """
