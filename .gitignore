@@ -1,5 +1,6 @@
-.DS_Store
-.#*
-.swp
 .nextflow*
 work/
+data/
+results/
+.DS_Store
+tests/test_data

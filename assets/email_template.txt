@@ -1,13 +1,13 @@
 ========================================
- NGI-NeutronStar v${version}
+ nf-core/neutronstar v${version}
 ========================================
 Run Name: $runName
 
 <% if (success){
-    out << "## NGI-NeutronStar execution completed successfully! ##"
+    out << "## nf-core/neutronstar execution completed successfully! ##"
 } else {
     out << """####################################################
-## NGI-NeutronStar execution completed unsuccessfully! ##
+## nf-core/neutronstar execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -19,7 +19,7 @@ ${errorReport}
 
 <% if (!success){
     out << """####################################################
-## NGI-NeutronStar execution completed unsuccessfully! ##
+## nf-core/neutronstar execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -27,7 +27,7 @@ The full error message was:
 ${errorReport}
 """
 } else {
-    out << "## NGI-NeutronStar execution completed successfully! ##"
+    out << "## nf-core/neutronstar execution completed successfully! ##"
 }
 %>
 
@@ -46,11 +46,6 @@ Pipeline Configuration:
 -----------------------
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
-
-Software Versions:
------------------------
-<% out << software_versions.collect{ k,v -> " - $k: $v" }.join("\n") %>
-
 --
-NGI-NeutronStar
-https://github.com/scilifelab/NGI-NeutronStar
+nf-core/neutronstar
+https://github.com/nf-core/neutronstar

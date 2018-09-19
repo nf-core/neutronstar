@@ -1,6 +1,14 @@
-# ![NGI-NeutronStar](docs/images/NGI-NeutronStar_logo.png)
+# nf-core/neutronstar
+**De novo assembly pipeline for 10X linked-reads, used at the SciLifeLab National Genomics Infrastructure.**
 
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.27.6-brightgreen.svg)](https://www.nextflow.io/)
+[![Build Status](https://travis-ci.org/nf-core/neutronstar.svg?branch=master)](https://travis-ci.org/nf-core/neutronstar)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.30.0-brightgreen.svg)](https://www.nextflow.io/)
+
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
+[![Docker](https://img.shields.io/docker/automated/nfcore/neutronstar.svg)](https://hub.docker.com/r/nfcore/neutronstar)
+![Singularity Container available](
+https://img.shields.io/badge/singularity-available-7E4C74.svg)
+
 
 ## Table of Contents
 
@@ -20,7 +28,7 @@
 
 ### Introduction
 
-NGI-NeutronStar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data. It's developed and used at the [National Genomics Infastructure](https://ngisweden.scilifelab.se/) at [SciLifeLab Stockholm](https://www.scilifelab.se/platforms/ngi/), Sweden. The pipeline uses [Nextflow](https://www.nextflow.io), a bioinformatics workflow tool.
+NGI-NeutronStar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data. The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers making installation trivial and results highly reproducible.
 
 #### Disclaimer
 
@@ -62,7 +70,7 @@ If running the pipeline using the [Singularity](http://singularity.lbl.gov/) con
 singularity pull --name "ngi-neutronstar.simg" docker://remiolsen/ngi-neutronstar
 # After uploading it to your_hpc:/singularity_images/
 nextflow run -with-singularity /singularity_images/ngi-neutronstar.simg /my-pipelines/NGI-NeutronStar-master
-``` 
+```
 
 #### Busco data
 
@@ -88,10 +96,10 @@ python busco_data.py download minimal
 ---------
 
 ### Usage instructions
-It is recommended that you start the pipeline inside a unix `screen` (or alternatively `tmux`). 
+It is recommended that you start the pipeline inside a unix `screen` (or alternatively `tmux`).
 
 #### Single assembly
-To assemble a single sample, the pipeline can be started using the following command: 
+To assemble a single sample, the pipeline can be started using the following command:
 ```
 nextflow run -profile nextflow_profile /path/to/NGI-NeutronStar/main.nf [Supernova options] (--clusterOptions)
 ```
@@ -124,7 +132,7 @@ Run nextflow using `nextflow run -profile -params-file sample_config.yaml /path/
 
 #### Advanced usage
 
-If not specifying the option `-profile` it will use a default one that is suitable to testing the pipeline on a typical laptop computer (using the test dataset included with the Supernova package). In a high-performance computing environment (and with real data) you should specify one of the `hpc` profiles. For instance for a compute cluster with the [Slurm](https://slurm.schedmd.com/documentation.html) job scheduler and Singularity version >= 2.4 installed, `hpc_singularity_slurm`. 
+If not specifying the option `-profile` it will use a default one that is suitable to testing the pipeline on a typical laptop computer (using the test dataset included with the Supernova package). In a high-performance computing environment (and with real data) you should specify one of the `hpc` profiles. For instance for a compute cluster with the [Slurm](https://slurm.schedmd.com/documentation.html) job scheduler and Singularity version >= 2.4 installed, `hpc_singularity_slurm`.
 
 ---------
 
