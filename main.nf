@@ -263,7 +263,7 @@ process busco {
     env AUGUSTUS_CONFIG_PATH from "\$PWD/augustus_config"
 
     output:
-    file ("run_${id}/") into busco_results
+    file ("run_${id}/*.{txt,tsv}") into busco_results
 
     script:
     // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
