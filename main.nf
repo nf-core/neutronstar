@@ -42,7 +42,7 @@ def helpMessage() {
       --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
       --max_time                    Amount of time for the job scheduler to request (in hours). (default=120)
       --full_output                 Keep all the files that are output from Supernova. By default only the final assembly graph is kept, as it is needed to make the output fasta files.
-      -process.clusterOptions       The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
+      --clusterOptions              The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
 
 
     Other options:
