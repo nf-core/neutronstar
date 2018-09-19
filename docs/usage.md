@@ -1,6 +1,8 @@
 ### Usage instructions
 It is recommended that you start the pipeline inside a unix `screen` (or alternatively `tmux`).
 
+---------
+
 #### Single assembly
 To assemble a single sample, the pipeline can be started using the following command:
 ```
@@ -19,10 +21,12 @@ nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] 
 * `--genomesize` **required** The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
 * `--BUSCOdata` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
+---------
+
 #### Multiple assemblies
 nf-core/neutronstar also supports adding the above parameters in a `.yaml` file. This way you can run several assemblies in parallel. The following example file (`sample_config.yaml`) will run two assemblies of the test data included in the Supernova installation, one using the default parameters, and one using barcode downsampling:
 
-```
+```yaml
 genomesize: 1000000
 samples:
   - id: testrun
@@ -34,6 +38,8 @@ samples:
     bcfrac: 0.5
 ```
 Run nextflow using `nextflow run -profile nextflow_profile -params-file sample_config.yaml /path/to/neutronstar (--clusterOptions)`
+
+---------
 
 #### Advanced usage
 
