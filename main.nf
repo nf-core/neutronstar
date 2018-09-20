@@ -67,7 +67,6 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -156,13 +155,12 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/neutronstar v${manifest.pipelineVersion}"
+nf-core/neutronstar v${params.pipelineVersion}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/neutronstar'
-summary['Pipeline Version'] = manifest.pipelineVersion
+summary['Pipeline Version'] = params.pipelineVersion
 summary['Run Name']     = custom_runName ?: workflow.runName
-summary['Reads']        = params.reads
 summary['Fasta Ref']    = params.fasta
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Memory']   = params.max_memory
@@ -331,7 +329,7 @@ process software_versions {
 
     script:
     """
-    echo $params.version > v_pipeline.txt
+    echo $params.piplineVersion > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
@@ -371,7 +369,7 @@ workflow.onComplete {
       subject = "[nf-core/neutronstar] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = manifest.pipelineVersion
+    email_fields['version'] = params.pipelineVersion
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete
