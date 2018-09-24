@@ -88,6 +88,9 @@ custom_runName = params.name
 if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
   custom_runName = workflow.runName
 }
+else {
+  custom_runName = "supernova_assembly_${workflow.sessionId}"
+}
 
 // Check workDir/outdir paths to be S3 buckets if running on AWSBatch
 // related: https://github.com/nextflow-io/nextflow/issues/813
@@ -329,7 +332,7 @@ process software_versions {
 
     script:
     """
-    echo $params.piplineVersion > v_pipeline.txt
+    echo $params.pipelineVersion > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
