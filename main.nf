@@ -148,7 +148,9 @@ for (sample in params.samples) {
     assert sample.id.size() == sample.id.findAll(/[A-z0-9\\.\-]/).size() : "Illegal character(s) in sample ID: ${sample.id}."
     assert new File(sample.fastqs).exists() : "Path not found ${sample.fastqs}"
 }
-assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
+if (!params.test) {
+    assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
+}
 
 // Header log info
 log.info """=======================================================
