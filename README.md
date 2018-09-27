@@ -1,7 +1,7 @@
 # nf-core/neutronstar
 **De novo assembly pipeline for 10X linked-reads, used at the SciLifeLab National Genomics Infrastructure.**
 
-[![Build Status](https://travis-ci.org/nf-core/neutronstar.svg?branch=master)](https://travis-ci.org/nf-core/neutronstar)
+[![Build Status](https://travis-ci.org/nf-core/neutronstar.svg?branch=master)](https://travis-ci.org/remiolsen/nf-core-neutronstar)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.30.0-brightgreen.svg)](https://www.nextflow.io/)
 ![Singularity Container available](
 https://img.shields.io/badge/singularity-available-7E4C74.svg)
