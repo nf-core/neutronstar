@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import sys
+import os
+import argparse
+import subprocess
+
+archive = os.path.join(os.path.dirname(os.path.realpath(__file__)),"testrun_supernova.tar.gz")
+
+if __name__ == '__main__':
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--id')
+
+  args, unknown = parser.parse_known_args()
+
+  if 'id' in args:
+    tar = subprocess.call(['tar', 'zfx', archive])
+    tar = subprocess.call(['mv', 'testrun_supernova', args.id])
+  else:
+    sys.exit(1)

@@ -4,7 +4,7 @@ from collections import OrderedDict
 import re
 
 regexes = {
-    'NGI-NeutronStar': ['v_pipeline.txt', r"(\S+)"],
+    'nf-core/neutronstar': ['v_pipeline.txt', r"(\S+)"],
     'Nextflow': ['v_nextflow.txt', r"(\S+)"],
     'MultiQC': ['v_multiqc.txt', r"multiqc, version (\S+)"],
     'Supernova': ['v_supernova.txt', r"supernova run \((\S+)\)"],
@@ -12,7 +12,7 @@ regexes = {
     'Busco': ['v_busco.txt', r"BUSCO (\S+)"],
 }
 results = OrderedDict()
-results['NGI-NeutronStar'] = '<span style="color:#999999;\">N/A</span>'
+results['nf-core/neutronstar'] = '<span style="color:#999999;\">N/A</span>'
 results['Nextflow'] = '<span style="color:#999999;\">N/A</span>'
 results['MultiQC'] = '<span style="color:#999999;\">N/A</span>'
 results['Supernova'] =  '<span style="color:#999999;\">N/A</span>'
@@ -33,9 +33,9 @@ for k, v in regexes.items():
 
 # Dump to YAML
 print ('''
-id: 'ngi-neutronstar-software-versions'
-section_name: 'NGI-NeutronStar Software Versions'
-section_href: 'https://github.com/scilifelab/NGI-NeutronStar'
+id: 'nf-core-neutronstar-software-versions'
+section_name: 'nf-core/neutronstar Software Versions'
+section_href: 'https://github.com/nf-core/neutronstar'
 plot_type: 'html'
 description: 'are collected at run time from the software output.'
 data: |

@@ -1,26 +1,26 @@
 #!/usr/bin/env nextflow
 /*
-vim: syntax=groovy
--*- mode: groovy;-*-
 ========================================================================================
-                         NGI-NeutronStar
+                         nf-core/neutronstar
 ========================================================================================
- NGI-NeutronStar Analysis Pipeline.
+ nf-core/neutronstar Analysis Pipeline.
  #### Homepage / Documentation
- https://github.com/scilifelab/NGI-NeutronStar
- #### Authors
- Remi-Andre Olsen remiolsen <remi-andre.olsen@scilifelab.se> - https://github.com/remiolsen>
+ https://github.com/nf-core/neutronstar
 ----------------------------------------------------------------------------------------
 */
 
 
 def helpMessage() {
     log.info"""
+    =========================================
+     nf-core/neutronstar v${manifest.pipelineVersion}
+    =========================================
     Usage:
 
     The typical command for running the pipeline is as follows:
 
-    nextflow run -profile name scilifelab/NGI-NeutronStar --id assembly_id --fastqs fastq_path --genomesize 1000000
+
+    nextflow run -profile hpc,singularity nf-core/neutronstar --id assembly_id --fastqs fastq_path --genomesize 1000000
 
     Mandatory arguments:
       --id                          [Supernova parameter]
@@ -42,7 +42,7 @@ def helpMessage() {
       --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
       --max_time                    Amount of time for the job scheduler to request (in hours). (default=120)
       --full_output                 Keep all the files that are output from Supernova. By default only the final assembly graph is kept, as it is needed to make the output fasta files.
-      -process.clusterOptions       The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
+      --clusterOptions              The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
 
 
     Other options:
@@ -53,24 +53,51 @@ def helpMessage() {
     """.stripIndent()
 }
 
-
-
 /*
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Pipeline version
-
-log.info "     \\|/"
-log.info "  ----*----   N G I - N e u t r o n S t a r (${params.version})"
-log.info "     /|\\"
-log.info ""
 // Show help emssage
 params.help = false
 if (params.help){
     helpMessage()
     exit 0
 }
+
+
+// Configurable variables
+params.name = false
+params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
+params.email = false
+params.plaintext_email = false
+
+multiqc_config = file(params.multiqc_config)
+output_docs = file("$baseDir/docs/output.md")
+def buscoPath = "${params.BUSCOfolder}/${params.BUSCOdata}"
+
+// NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
+// If you want to use the above in a process, define the following:
+//   input:
+//   file fasta from fasta
+//
+
+
+// Has the run name been specified by the user?
+//  this has the bonus effect of catching both -name and --name
+custom_runName = params.name
+if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
+  custom_runName = workflow.runName
+}
+else {
+  custom_runName = "supernova_assembly_${workflow.sessionId}"
+}
+
+// Check workDir/outdir paths to be S3 buckets if running on AWSBatch
+// related: https://github.com/nextflow-io/nextflow/issues/813
+if( workflow.profile == 'awsbatch') {
+    if(!workflow.workDir.startsWith('s3:') || !params.outdir.startsWith('s3:')) exit 1, "Workdir or Outdir not on S3 - specify S3 Buckets for each to run on AWSBatch!"
+}
+
 
 // Common options for both supernova and longranger
 def TenX_optional = {sample, lanes, indices, project->
@@ -89,21 +116,6 @@ def supernova_optional = {maxreads, bcfrac, nopreflight->
     nopreflight!=null ? str << "--nopreflight " : null
     return str
 }
-
-
-//##### Parameters
-def buscoPath = "${params.BUSCOfolder}/${params.BUSCOdata}"
-
-
-// Has the run name been specified by the user?
-//  this has the bonus effect of catching both -name and --name
-custom_runName = params.name
-if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
-  custom_runName = workflow.runName
-}else {
-  custom_runName = "supernova_assembly_${workflow.sessionId}"
-}
-
 
 samples = []
 if (params.samples == null) { //We don't have sample JSON/YAML file, just use cmd-line
@@ -136,42 +148,69 @@ for (sample in params.samples) {
     assert sample.id.size() == sample.id.findAll(/[A-z0-9\\.\-]/).size() : "Illegal character(s) in sample ID: ${sample.id}."
     assert new File(sample.fastqs).exists() : "Path not found ${sample.fastqs}"
 }
-assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
-
-// Check that Nextflow version is up to date enough
-// try / throw / catch works for NF versions < 0.25 when this was implemented
-try {
-    if( ! nextflow.version.matches(">= $params.nf_required_version") ){
-        throw new RuntimeException('Nextflow version too old')
-    }
-} catch (all) {
-    log.error "====================================================\n" +
-              "  Nextflow version $nf_required_version required! You are running v$workflow.nextflow.version.\n" +
-              "  Pipeline execution will continue, but things may break.\n" +
-              "  Please run `nextflow self-update` to update Nextflow.\n" +
-              "============================================================"
+if (!params.test) {
+    assert new File(buscoPath).exists() : "Path not found ${buscoPath}"
 }
 
+// Header log info
+log.info """=======================================================
+                                          ,--./,-.
+          ___     __   __   __   ___     /,-._.--~\'
+    |\\ | |__  __ /  ` /  \\ |__) |__         }  {
+    | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
+                                          `._,._,\'
 
-//###### Start
+nf-core/neutronstar v${params.pipelineVersion}"
+======================================================="""
 def summary = [:]
-summary['Run Name']     = custom_runName
+summary['Pipeline Name']  = 'nf-core/neutronstar'
+summary['Pipeline Version'] = params.pipelineVersion
+summary['Run Name']     = custom_runName ?: workflow.runName
+summary['Fasta Ref']    = params.fasta
+summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
+summary['Max Memory']   = params.max_memory
+summary['Max CPUs']     = params.max_cpus
+summary['Max Time']     = params.max_time
 summary['Output dir']   = params.outdir
 summary['Working dir']  = workflow.workDir
-summary['Container']    = workflow.container
-if(workflow.revision) summary['Pipeline Release'] = workflow.revision
+summary['Container Engine'] = workflow.containerEngine
+if(workflow.containerEngine) summary['Container'] = workflow.container
 summary['Current home']   = "$HOME"
 summary['Current user']   = "$USER"
 summary['Current path']   = "$PWD"
+summary['Working dir']    = workflow.workDir
+summary['Output dir']     = params.outdir
 summary['Script dir']     = workflow.projectDir
 summary['Config Profile'] = workflow.profile
+if(workflow.profile == 'awsbatch'){
+   summary['AWS Region'] = params.awsregion
+   summary['AWS Queue'] = params.awsqueue
+}
 if(params.email) summary['E-mail Address'] = params.email
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
+log.info "========================================="
 
+
+def create_workflow_summary(summary) {
+
+    def yaml_file = workDir.resolve('workflow_summary_mqc.yaml')
+    yaml_file.text  = """
+    id: 'nf-core-neutronstar-summary'
+    description: " - this information is collected when the pipeline is started."
+    section_name: 'nf-core/neutronstar Workflow Summary'
+    section_href: 'https://github.com/nf-core/neutronstar'
+    plot_type: 'html'
+    data: |
+        <dl class=\"dl-horizontal\">
+${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style=\"color:#999999;\">N/A</a>'}</samp></dd>" }.join("\n")}
+        </dl>
+    """.stripIndent()
+
+   return yaml_file
+}
 for (i in samples) {
     log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
 }
-
 
 
 Channel
@@ -295,7 +334,7 @@ process software_versions {
 
     script:
     """
-    echo $params.version > v_pipeline.txt
+    echo $params.pipelineVersion > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
@@ -330,12 +369,12 @@ process multiqc {
 workflow.onComplete {
 
     // Set up the e-mail variables
-    def subject = "[NGI-NeutronStar] Successful: ${custom_runName ?: workflow.runName}"
+    def subject = "[nf-core/neutronstar] Successful: $workflow.runName"
     if(!workflow.success){
-      subject = "[NGI-NeutronStar] FAILED: ${custom_runName ?: workflow.runName}"
+      subject = "[nf-core/neutronstar] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = version
+    email_fields['version'] = params.pipelineVersion
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete
@@ -353,39 +392,38 @@ workflow.onComplete {
     if(workflow.repository) email_fields['summary']['Pipeline repository Git URL'] = workflow.repository
     if(workflow.commitId) email_fields['summary']['Pipeline repository Git Commit'] = workflow.commitId
     if(workflow.revision) email_fields['summary']['Pipeline Git branch/tag'] = workflow.revision
-    if(workflow.container) email_fields['summary']['Docker image'] = workflow.container
-    email_fields['software_versions'] = [:]
-    email_fields['software_versions']['Nextflow Build'] = workflow.nextflow.build
-    email_fields['software_versions']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
+    email_fields['summary']['Nextflow Version'] = workflow.nextflow.version
+    email_fields['summary']['Nextflow Build'] = workflow.nextflow.build
+    email_fields['summary']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
     // Render the TXT template
     def engine = new groovy.text.GStringTemplateEngine()
-    def tf = new File("$baseDir/misc/email_template.txt")
+    def tf = new File("$baseDir/assets/email_template.txt")
     def txt_template = engine.createTemplate(tf).make(email_fields)
     def email_txt = txt_template.toString()
 
     // Render the HTML template
-    def hf = new File("$baseDir/misc/email_template.html")
+    def hf = new File("$baseDir/assets/email_template.html")
     def html_template = engine.createTemplate(hf).make(email_fields)
     def email_html = html_template.toString()
 
     // Render the sendmail template
     def smail_fields = [ email: params.email, subject: subject, email_txt: email_txt, email_html: email_html, baseDir: "$baseDir" ]
-    def sf = new File("$baseDir/misc/sendmail_template.txt")
+    def sf = new File("$baseDir/assets/sendmail_template.txt")
     def sendmail_template = engine.createTemplate(sf).make(smail_fields)
     def sendmail_html = sendmail_template.toString()
 
     // Send the HTML e-mail
     if (params.email) {
         try {
-          if( params.plaintext_email ){ throw new RuntimeException('Send plaintext e-mail, not HTML') }
+          if( params.plaintext_email ){ throw GroovyException('Send plaintext e-mail, not HTML') }
           // Try to send HTML e-mail using sendmail
           [ 'sendmail', '-t' ].execute() << sendmail_html
-          log.info "[NGI-NeutronStar] Sent summary e-mail to $params.email (sendmail)"
+          log.info "[nf-core/neutronstar] Sent summary e-mail to $params.email (sendmail)"
         } catch (all) {
           // Catch failures and try with plaintext
           [ 'mail', '-s', subject, params.email ].execute() << email_txt
-          log.info "[NGI-NeutronStar] Sent summary e-mail to $params.email (mail)"
+          log.info "[nf-core/neutronstar] Sent summary e-mail to $params.email (mail)"
         }
     }
 
@@ -399,6 +437,6 @@ workflow.onComplete {
     def output_tf = new File( output_d, "pipeline_report.txt" )
     output_tf.withWriter { w -> w << email_txt }
 
-    log.info "[NGI-NeutronStar] Pipeline Complete"
+    log.info "[nf-core/neutronstar] Pipeline Complete"
 
 }
