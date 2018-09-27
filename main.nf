@@ -268,10 +268,8 @@ process mkoutput {
 
     script:
     """
-    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id} --style=pseudohap --minsize=${params.minsize}
-    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id}.phased --style=megabubbles --minsize=${params.minsize}
-    gzip -d ${id}.fasta.gz
-    gzip -d ${id}.phased.fasta.gz
+    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id} --style=pseudohap --minsize=${params.minsize} --nozip
+    supernova mkoutput --asmdir=${id}_supernova/outs/assembly --outprefix=${id}.phased --style=megabubbles --minsize=${params.minsize} --nozip
     """
 }
 
@@ -299,7 +297,7 @@ process busco {
 
     input:
     set val(id), file(asm) from supernova_asm2
-    env AUGUSTUS_CONFIG_PATH from "\$PWD/augustus_config"
+    env AUGUSTUS_CONFIG_PATH from "./augustus_config"
 
     output:
     file ("run_${id}/*.{txt,tsv}") into busco_results
