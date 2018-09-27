@@ -29,8 +29,7 @@ install:
   - cd /tmp/nf-core-tools
   - pip install --user -e .
   # Reset
-  - mkdir ${TRAVIS_BUILD_DIR}/tests
-  - cd ${TRAVIS_BUILD_DIR}/tests
+  - cd ${TRAVIS_BUILD_DIR}
 
 env:
   - NXF_VER=0.30.0 # Specify a minimum NF version that should be tested and work
@@ -39,5 +38,7 @@ env:
 script:
   # Lint the pipeline code
   - nf-core lint ${TRAVIS_BUILD_DIR}
+  # Run the busco_downloader script
+  - python ${TRAVIS_BUILD_DIR}/data/busco_data.py --help
   # Run the pipeline with the test profile
   - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,test --id testrun --maxreads all --fastqs . --genomesize 1000
