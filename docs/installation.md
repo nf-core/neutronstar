@@ -74,7 +74,7 @@ nextflow run -c custom.yaml /my-pipelines/neutronstar-master
 
 #### BUSCO data
 
-By default nf-core/neutronstar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--BUSCOfolder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
+By default nf-core/neutronstar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--busco_folder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
 
 ```bash
 # Example downloading a minimal, but broad set of lineages

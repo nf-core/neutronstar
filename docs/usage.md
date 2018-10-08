@@ -19,7 +19,7 @@ nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] 
   * `--maxreads` **required in Supernova >= 2.1**
 * `--clusterOptions` are the options to feed to the HPC job manager. For instance for SLURM `--clusterOptions="-A project -C node-type"`
 * `--genomesize` **required** The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
-* `--BUSCOdata` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
+* `--busco_data` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
 ---------
 
