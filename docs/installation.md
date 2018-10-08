@@ -35,7 +35,7 @@ If your compute environment does not have access to the internet you can build t
 
 ```bash
 # Build image
-singularity pull --name "nf-core-neutronstar.simg" docker://remiolsen/ngi-neutronstar
+singularity pull --name "nf-core-neutronstar.simg" docker://nfcore/neutronstar
 singularity pull --name "supernova.simg" docker://remiolsen/supernova
 # Upload it to your_hpc:/singularity_images/
 ```
@@ -74,11 +74,11 @@ nextflow run -c custom.yaml /my-pipelines/neutronstar-master
 
 #### BUSCO data
 
-By default NGI-NeutronStar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--BUSCOfolder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
+By default nf-core/neutronstar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--BUSCOfolder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
 
 ```bash
 # Example downloading a minimal, but broad set of lineages
-cd /my-pipelines/NGI-NeutronStar-master/data/
+cd /my-pipelines/nf-core/neutronstar-master/data/
 # To list the datasets
 #Category minimal contains:
 #  - bacteria_odb9
