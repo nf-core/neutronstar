@@ -51,13 +51,7 @@ singularity {
 process {
 
   container = { "/singularity_images/nf-core-neutronstar.simg" }
-  $mkoutput {
-    container = { "/singularity_images/supernova.simg" }
-  }
-  $supernova_version {
-    container = { "/singularity_images/supernova.simg" }
-  }
-  $supernova {
+  withName: 'supernova*' {
     container = { "/singularity_images/supernova.simg" }
   }
 
