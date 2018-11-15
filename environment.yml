@@ -6,6 +6,6 @@ channels:
 dependencies:
   - bioconda::busco=3.0.2
   - bioconda::multiqc=1.6
-  - pip=18.0
+  - defaults::pip=18.1
   - pip:
-    - quast=4.6.3
+    - quast==5.0.1
