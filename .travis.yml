@@ -16,7 +16,7 @@ before_install:
   - docker pull remiolsen/nf-core-neutronstar
   - docker pull remiolsen/supernova
   # Fake the tag locally so that the pipeline runs properly
-  - docker tag nfcore/neutronstar nfcore/neutronstar:latest
+  - docker tag remiolsen/nf-core-neutronstar remiolsen/nf-core-neutronstar:latest
 
 install:
   # Install Nextflow
