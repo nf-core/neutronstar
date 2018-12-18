@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/neutronstar v${manifest.pipelineVersion}
+     nf-core/neutronstar v${params.pipelineVersion}
     =========================================
     Usage:
 
@@ -37,6 +37,7 @@ def helpMessage() {
       --project                     [Supernova parameter]
       --maxreads                    [Supernova parameter]
       --nopreflight                 [Supernova parameter]
+      --accept_extreme_coverage     [Supernova parameter]
       --minsize                     [Supernova mkdoutput parameter]
       --max_cpus                    Amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16 for hpc config)
       --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
@@ -100,7 +101,7 @@ if( workflow.profile == 'awsbatch') {
 
 
 // Common options for both supernova and longranger
-def TenX_optional = {sample, lanes, indices, project->
+def TenX_optional = {sample, lanes, indices, project ->
     def str = ""
     sample!=null ? str <<= "--sample=${sample} " : null
     lanes!=null ? str <<= "--lanes=${lanes} " : null
@@ -109,11 +110,12 @@ def TenX_optional = {sample, lanes, indices, project->
     return str
 }
 // Now only supernova options
-def supernova_optional = {maxreads, bcfrac, nopreflight->
+def supernova_optional = {maxreads, bcfrac, nopreflight, accept_extreme_coverage ->
     def str = ""
     maxreads!=null ? str <<= "--maxreads=${maxreads} " : null
     bcfrac!=null ? str <<= "--bcfrac=${bcfrac} " : null
     nopreflight!=null ? str << "--nopreflight " : null
+    accept_extreme_coverage!=null ? str <<= "--accept-extreme-coverage " : null
     return str
 }
 
@@ -125,7 +127,7 @@ if (params.samples == null) { //We don't have sample JSON/YAML file, just use cm
     s << params.id
     s << params.fastqs
     s << TenX_optional(params.sample, params.lanes, params.indices, params.project)
-    s << supernova_optional(params.maxreads, params.bcfrac, params.nopreflight)
+    s << supernova_optional(params.maxreads, params.bcfrac, params.nopreflight, params.accept_extreme_coverage)
     samples << s
 }
 
@@ -138,7 +140,7 @@ for (sample in params.samples) {
     s << sample.id
     s << sample.fastqs
     s << TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
-    s << supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight)
+    s << supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight, sample.accept_extreme_coverage)
     samples << s
 }
 
