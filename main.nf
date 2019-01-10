@@ -305,10 +305,8 @@ process busco {
     file ("run_${id}/*.{txt,tsv}") into busco_results
 
     script:
-    // If statement is only for UPPMAX HPC environments, it shouldn't mess up anything else
     """
     tar xfj $baseDir/misc/augustus_config.tar.bz2
-    if ! [ -z \${BUSCO_SETUP+x} ]; then source \$BUSCO_SETUP; fi
     run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
     """
 }
