@@ -5,7 +5,5 @@ channels:
   - defaults
 dependencies:
   - bioconda::busco=3.0.2
+  - bioconda::quast=5.0.2
   - bioconda::multiqc=1.6
-  - conda-forge::pip=18.1
-  - pip:
-    - quast==5.0.1
