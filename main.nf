@@ -13,21 +13,21 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/neutronstar v${params.pipelineVersion}
+     nf-core/neutronstar v${workflow.manifest.version}
     =========================================
     Usage:
 
     The typical command for running the pipeline is as follows:
 
 
-    nextflow run -profile hpc,singularity nf-core/neutronstar --id assembly_id --fastqs fastq_path --genomesize 1000000
+    nextflow run -profile standard,singularity nf-core/neutronstar --id assembly_id --fastqs fastq_path --genomesize 1000000
 
     Mandatory arguments:
       --id                          [Supernova parameter]
       --fastqs                      [Supernova parameter]
       --genomesize                  The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
-      -profile                      Hardware config to use. docker / hpc
-      --BUSCOdata                   The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
+      -profile                      Configuration profile to use
+      --busco_data                  The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
     Options:
       --sample                      [Supernova parameter]
@@ -39,9 +39,9 @@ def helpMessage() {
       --nopreflight                 [Supernova parameter]
       --accept_extreme_coverage     [Supernova parameter]
       --minsize                     [Supernova mkdoutput parameter]
-      --max_cpus                    Amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16 for hpc config)
-      --max_memory                  Amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256 for hpc config)
-      --max_time                    Amount of time for the job scheduler to request (in hours). (default=120)
+      --max_cpus                    Max amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16)
+      --max_memory                  Max amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256)
+      --max_time                    Max amount of time for the job scheduler to request (in hours). (default=120)
       --full_output                 Keep all the files that are output from Supernova. By default only the final assembly graph is kept, as it is needed to make the output fasta files.
       --clusterOptions              The options to feed to the HPC job manager. For instance for SLURM --clusterOptions='-A project -C node-type'
 
@@ -74,7 +74,7 @@ params.plaintext_email = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
-def buscoPath = "${params.BUSCOfolder}/${params.BUSCOdata}"
+def buscoPath = "${params.busco_folder}/${params.busco_data}"
 
 // NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
 // If you want to use the above in a process, define the following:
@@ -162,11 +162,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/neutronstar v${params.pipelineVersion}"
+nf-core/neutronstar v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/neutronstar'
-summary['Pipeline Version'] = params.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Fasta Ref']    = params.fasta
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
@@ -237,7 +237,7 @@ if (params.full_output) {
         """
     }
 
-}else {
+} else {
     process supernova {
         tag "${id}"
         publishDir "${params.outdir}/supernova/", mode: 'copy'
@@ -257,7 +257,7 @@ if (params.full_output) {
 
 }
 
-process mkoutput {
+process supernova_mkoutput {
     tag "${id}"
     publishDir "${params.outdir}/assemblies/", mode: 'copy'
 
@@ -332,7 +332,7 @@ process software_versions {
 
     script:
     """
-    echo $params.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     quast.py -v &> v_quast.txt
     multiqc --version > v_multiqc.txt
@@ -372,7 +372,7 @@ workflow.onComplete {
       subject = "[nf-core/neutronstar] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = params.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete
