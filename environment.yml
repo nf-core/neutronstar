@@ -4,6 +4,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - pip=18.0
   - bioconda::busco=3.0.2
+  - bioconda::quast=5.0.2
   - bioconda::multiqc=1.6

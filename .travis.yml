@@ -13,10 +13,10 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   # Pull the docker image first so the test doesn't wait for this
-  - docker pull nfcore/neutronstar
+  - docker pull remiolsen/nf-core-neutronstar
   - docker pull remiolsen/supernova
   # Fake the tag locally so that the pipeline runs properly
-  - docker tag nfcore/neutronstar nfcore/neutronstar:latest
+  - docker tag remiolsen/nf-core-neutronstar remiolsen/nf-core-neutronstar:latest
 
 install:
   # Install Nextflow
@@ -30,7 +30,7 @@ install:
   - cd ${TRAVIS_BUILD_DIR}
 
 env:
-  - NXF_VER=0.31.1 # Specify a minimum NF version that should be tested and work
+  - NXF_VER='0.32.0' # Specify a minimum NF version that should be tested and work
   #- NXF_VER='' # Plus: get the latest NF version and check, that it works
 
 script:

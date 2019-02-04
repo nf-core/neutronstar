@@ -17,9 +17,11 @@ nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] 
   * `--indices`
   * `--bcfrac`
   * `--maxreads` **required in Supernova >= 2.1**
+  * `--accept_extreme_coverage`
+  * `--nopreflight`
 * `--clusterOptions` are the options to feed to the HPC job manager. For instance for SLURM `--clusterOptions="-A project -C node-type"`
 * `--genomesize` **required** The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
-* `--BUSCOdata` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
+* `--busco_data` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
 ---------
 
@@ -43,6 +45,7 @@ Run nextflow using `nextflow run -profile nextflow_profile -params-file sample_c
 
 #### Advanced usage
 
-If not specifying the option `-profile` it will use a default one that is suitable to testing the pipeline on a typical laptop computer (using the test dataset included with the Supernova package). In a high-performance computing environment (and with real data) you should specify the `hpc` profile. For instance for a compute cluster with the [Slurm](https://slurm.schedmd.com/documentation.html) job scheduler and Singularity version >= 2.4 installed, `-profile hpc,singularity,slurm`.
+If not specifying the option `-profile` it will use a default one that is suitable in a high-performance computing environment with a minimum of 256 Gb memory. For instance for a compute cluster with the [Slurm](https://slurm.schedmd.com/documentation.html) job scheduler and Singularity version >= 2.4 installed, `-profile singularity,slurm`.
+If running tests on a laptop (Using for instance the test data included with Supernova) you should use the options `--max_cpu` and `--max_memory` to fit the specifications of you machine.
 
 To greatly reduce the storage requirements of the assembly graphs of Supernova, only a limited number of files will be copied from it's output. Enough to run `supernova mkoutput`. If you for some reason require the full output, please run with the argument `--full_output`

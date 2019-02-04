@@ -3,7 +3,7 @@
 **De novo assembly pipeline for 10X linked-reads.**
 
 [![Build Status](https://travis-ci.org/remiolsen/nf-core-neutronstar.svg?branch=master)](https://travis-ci.org/remiolsen/nf-core-neutronstar)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.31.1-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
 [![Gitter](https://img.shields.io/badge/gitter-%20join%20chat%20%E2%86%92-4fb99a.svg)](https://gitter.im/nf-core/Lobby)
 
 [![Docker Container available](https://img.shields.io/docker/automated/nfcore/neutronstar.svg)](https://hub.docker.com/r/nfcore/neutronstar/)
