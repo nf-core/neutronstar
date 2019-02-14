@@ -13,10 +13,10 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   # Pull the docker image first so the test doesn't wait for this
-  - docker pull remiolsen/nf-core-neutronstar
-  - docker pull remiolsen/supernova
+  - docker pull nfcore/neutronstar:dev
+  - docker pull nfcore/supernova:latest
   # Fake the tag locally so that the pipeline runs properly
-  - docker tag remiolsen/nf-core-neutronstar remiolsen/nf-core-neutronstar:latest
+  - docker tag nfcore/neutronstar:dev nfcore/neutronstar:latest
 
 install:
   # Install Nextflow
