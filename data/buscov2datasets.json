@@ -171,5 +171,8 @@
   ],
   "http://busco.ezlab.org/v2/datasets/alveolata_stramenophiles_ensembl.tar.gz": [
     "protists"
+  ],
+  "https://github.com/nf-core/test-datasets/raw/neutronstar/tests/busco_example.tar.gz": [
+    "test"
   ]
 }
