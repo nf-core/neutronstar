@@ -41,4 +41,4 @@ script:
   - python busco_data.py --help
   # Run the pipeline with the test profile
   - cd ${TRAVIS_BUILD_DIR}
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,test --id testrun --maxreads all --fastqs . --genomesize 1000
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,test --id testrun --maxreads all --fastqs . --genomesize 1000 --max_cpus 2 --max_memory 4
