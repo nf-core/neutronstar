@@ -223,6 +223,7 @@ Channel
 if (params.full_output) {
     process supernova_full {
         tag "${id}"
+        label "supernova"
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
@@ -240,6 +241,7 @@ if (params.full_output) {
 } else {
     process supernova {
         tag "${id}"
+        label "supernova"
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
@@ -259,6 +261,7 @@ if (params.full_output) {
 
 process supernova_mkoutput {
     tag "${id}"
+    label "supernova"
     publishDir "${params.outdir}/assemblies/", mode: 'copy'
 
     input:
