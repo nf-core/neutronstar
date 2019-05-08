@@ -12,7 +12,7 @@ pipeline {
                 sh "docker pull nfcore/neutronstar:dev"
                 sh "docker pull nfcore/supernova"
                 sh "docker tag nfcore/neutronstar:dev nfcore/neutronstar:latest"
-                sh "rm -rf testdata"
+                sh "rm -rf test-datasets"
                 sh "git clone --single-branch --branch neutronstar https://github.com/nf-core/test-datasets.git test-datasets"
             }
         }

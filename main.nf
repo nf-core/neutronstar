@@ -310,13 +310,14 @@ process busco {
     input:
     set val(id), file(asm) from supernova_asm2
     env AUGUSTUS_CONFIG_PATH from "./augustus_config"
+    file(augustus_archive) from Channel.fromPath("$baseDir/misc/augustus_config.tar.bz2")
 
     output:
     file ("run_${id}/*.{txt,tsv}") into busco_results
 
     script:
     """
-    tar xfj $baseDir/misc/augustus_config.tar.bz2
+    tar xfj ${augustus_archive}
     run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
     """
 }
