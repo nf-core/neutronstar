@@ -119,13 +119,14 @@ def supernova_optional = {maxreads, bcfrac, nopreflight, accept_extreme_coverage
     return str
 }
 
-samples = []
+def samples = []
+def fastqdirs = []
 if (params.samples == null) { //We don't have sample JSON/YAML file, just use cmd-line
     assert params.id != null : "Missing --id option"
     assert params.fastqs != null : "Missing --fastqs option"
     s = []
     s << params.id
-    s << params.fastqs
+    fastqdirs << params.fastqs
     s << TenX_optional(params.sample, params.lanes, params.indices, params.project)
     s << supernova_optional(params.maxreads, params.bcfrac, params.nopreflight, params.accept_extreme_coverage)
     samples << s
@@ -133,12 +134,13 @@ if (params.samples == null) { //We don't have sample JSON/YAML file, just use cm
 
 params.samples = []
 
+
 for (sample in params.samples) {
     assert sample.id != null : "Error in input parameter file"
     assert sample.fastqs != null : "Error in input parameter file"
     s = []
     s << sample.id
-    s << sample.fastqs
+    fastqdirs << sample.fastqs
     s << TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
     s << supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight, sample.accept_extreme_coverage)
     samples << s
@@ -207,15 +209,21 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
 
    return yaml_file
 }
-for (i in samples) {
-    log.info "  supernova run --id=${i[0]} --fastqs=${i[1]} ${i[2]} ${i[3]}"
+
+def fastqs_input = Channel.create()
+for (fqdir in fastqdirs) {
+    fastqstmp = Channel
+      .fromPath(fqdir, type: 'dir')
+      .ifEmpty { error "Not a directory: '${fqdir}'" }
+      .subscribe {
+        def fqgz = file("${fqdir}/*.{fastq,fq}.gz")
+        assert fqgz.size() >= 3 : "Could not find fastq files in: ${fqdir}"
+        fastqs_input.bind(file(fqdir))
+      }
 }
-
-
 Channel
     .from(samples)
     .set { supernova_input }
-
 
 if (params.full_output) {
     process supernova_full {
@@ -224,7 +232,8 @@ if (params.full_output) {
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
-        set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
+        set val(id), val(tenx_options), val(supernova_options) from supernova_input
+        file(fastqs) from fastqs_input
 
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
@@ -242,7 +251,8 @@ if (params.full_output) {
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
-        set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
+        set val(id), val(tenx_options), val(supernova_options) from supernova_input
+        file(fastqs) from fastqs_input
 
         output:
         set val(id), file("${id}_supernova") into supernova_results, supernova_results2
@@ -312,7 +322,7 @@ process busco {
 }
 
 process supernova_version {
-
+    label "supernova"
     output:
     file("v_supernova.txt") into v_supernova
 
@@ -347,7 +357,7 @@ process multiqc {
     input:
     file ('supernova/') from supernova_results2.collect()
     file ('busco/') from busco_results.collect()
-    file ('quast/*') from quast_results.collect()
+    file ('quast/') from quast_results.collect()
     file ('software_versions/') from software_versions_yaml.toList()
 
     output:
