@@ -13,10 +13,10 @@ before_install:
   # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   # Pull the docker image first so the test doesn't wait for this
-  - docker pull remiolsen/nf-core-neutronstar
-  - docker pull remiolsen/supernova
+  - docker pull nfcore/neutronstar:dev
+  - docker pull nfcore/supernova:latest
   # Fake the tag locally so that the pipeline runs properly
-  - docker tag remiolsen/nf-core-neutronstar remiolsen/nf-core-neutronstar:latest
+  - docker tag nfcore/neutronstar:dev nfcore/neutronstar:dev
 
 install:
   # Install Nextflow
@@ -39,6 +39,7 @@ script:
   # Run the busco_downloader script
   - cd ${TRAVIS_BUILD_DIR}/data/
   - python busco_data.py --help
-  # Run the pipeline with the test profile
+  # Run the pipeline with the test profile faked fastq files
   - cd ${TRAVIS_BUILD_DIR}
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,test --id testrun --maxreads all --fastqs . --genomesize 1000
+  - mkdir -p fakeq; touch fakeq/1.fq.gz; touch fakeq/2.fq.gz; touch fakeq/3.fq.gz
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,test --id testrun --maxreads all --fastqs fakeq/ --genomesize 1000 --max_cpus 2 --max_memory 4
