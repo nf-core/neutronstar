@@ -290,7 +290,6 @@ process busco {
 
     input:
     set val(id), file(asm) from supernova_asm2
-    //env AUGUSTUS_CONFIG_PATH from ".augustus_config/"
     file(augustus_archive) from Channel.fromPath("$baseDir/misc/augustus_config.tar.bz2")
 
     output:
