@@ -142,6 +142,10 @@ for (sample in params.samples) {
 //Extra parameter evaluation
 for (sample in params.samples) {
     assert sample.id.size() == sample.id.findAll(/[A-z0-9\\.\-]/).size() : "Illegal character(s) in sample ID: ${sample.id}."
+    for(folder in sample.fastqs.split(",")) {
+      def f = new File(folder)
+      assert f.exists() : "Non-existent folder specified for --fastqs: ${folder}"
+    }
 }
 
 
