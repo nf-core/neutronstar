@@ -37,7 +37,7 @@ def helpMessage() {
       --project                     [Supernova parameter]
       --maxreads                    [Supernova parameter]
       --nopreflight                 [Supernova parameter]
-      --accept_extreme_coverage     [Supernova parameter]
+      --no_accept_extreme_coverage  Enables input coverage validation in Supernova (i.e. disables --accept-extreme-coverage)
       --minsize                     [Supernova mkdoutput parameter]
       --max_cpus                    Max amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16)
       --max_memory                  Max amount of memory (in Gb) for the jobscheduler to request. Supernova will use all of it. (default=256)
@@ -76,12 +76,6 @@ multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 def buscoPath = "${params.busco_folder}/${params.busco_data}"
 
-// NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
-// If you want to use the above in a process, define the following:
-//   input:
-//   file fasta from fasta
-//
-
 
 // Has the run name been specified by the user?
 //  this has the bonus effect of catching both -name and --name
@@ -103,46 +97,44 @@ if( workflow.profile == 'awsbatch') {
 // Common options for both supernova and longranger
 def TenX_optional = {sample, lanes, indices, project ->
     def str = ""
-    sample!=null ? str <<= "--sample=${sample} " : null
-    lanes!=null ? str <<= "--lanes=${lanes} " : null
-    indices!=null ? str <<= "--indices=${indices} " : null
-    project!=null ? str <<= "--project=${project} " : null
+    str += sample ? "--sample=${sample} " : ""
+    str += lanes ? "--lanes=${lanes} " : ""
+    str += indices ? "--indices=${indices} " : ""
+    str += project ?  "--project=${project} " : ""
     return str
 }
 // Now only supernova options
-def supernova_optional = {maxreads, bcfrac, nopreflight, accept_extreme_coverage ->
+def supernova_optional = {maxreads, bcfrac, nopreflight, no_accept_extreme_coverage ->
     def str = ""
-    maxreads!=null ? str <<= "--maxreads=${maxreads} " : null
-    bcfrac!=null ? str <<= "--bcfrac=${bcfrac} " : null
-    nopreflight!=null ? str << "--nopreflight " : null
-    accept_extreme_coverage!=null ? str <<= "--accept-extreme-coverage " : null
+    str += maxreads ?  "--maxreads=${maxreads} " : "--maxreads=all "
+    str += bcfrac ? "--bcfrac=${bcfrac} " : ""
+    str += nopreflight ? "--nopreflight " : ""
+    str += no_accept_extreme_coverage ? "" : "--accept-extreme-coverage "
     return str
 }
 
 def samples = []
-def fastqdirs = []
 if (params.samples == null) { //We don't have sample JSON/YAML file, just use cmd-line
-    assert params.id != null : "Missing --id option"
-    assert params.fastqs != null : "Missing --fastqs option"
+    assert params.id : "Missing --id option"
+    assert params.fastqs : "Missing --fastqs option"
     s = []
-    s << params.id
-    fastqdirs << params.fastqs
-    s << TenX_optional(params.sample, params.lanes, params.indices, params.project)
-    s << supernova_optional(params.maxreads, params.bcfrac, params.nopreflight, params.accept_extreme_coverage)
+    s += params.id
+    s += params.fastqs
+    s += TenX_optional(params.sample, params.lanes, params.indices, params.project)
+    s += supernova_optional(params.maxreads, params.bcfrac, params.nopreflight, params.no_accept_extreme_coverage)
     samples << s
 }
 
 params.samples = []
 
-
 for (sample in params.samples) {
-    assert sample.id != null : "Error in input parameter file"
-    assert sample.fastqs != null : "Error in input parameter file"
+    assert sample.id : "Error in input parameter file"
+    assert sample.fastqs : "Error in input parameter file"
     s = []
-    s << sample.id
-    fastqdirs << sample.fastqs
-    s << TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
-    s << supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight, sample.accept_extreme_coverage)
+    s += sample.id
+    s += sample.fastqs
+    s += TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
+    s += supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight, sample.no_accept_extreme_coverage)
     samples << s
 }
 
@@ -210,17 +202,7 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
    return yaml_file
 }
 
-def fastqs_input = Channel.create()
-for (fqdir in fastqdirs) {
-    fastqstmp = Channel
-      .fromPath(fqdir, type: 'dir')
-      .ifEmpty { error "Not a directory: '${fqdir}'" }
-      .subscribe {
-        def fqgz = file("${fqdir}/*.{fastq,fq}.gz")
-        assert fqgz.size() >= 3 : "Could not find fastq files in: ${fqdir}"
-        fastqs_input.bind(file(fqdir))
-      }
-}
+
 Channel
     .from(samples)
     .set { supernova_input }
@@ -232,8 +214,8 @@ if (params.full_output) {
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
-        set val(id), val(tenx_options), val(supernova_options) from supernova_input
-        file(fastqs) from fastqs_input
+        set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
+
 
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
@@ -251,8 +233,7 @@ if (params.full_output) {
         publishDir "${params.outdir}/supernova/", mode: 'copy'
 
         input:
-        set val(id), val(tenx_options), val(supernova_options) from supernova_input
-        file(fastqs) from fastqs_input
+        set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
 
         output:
         set val(id), file("${id}_supernova") into supernova_results, supernova_results2
@@ -296,7 +277,7 @@ process quast {
     file("quast_results/latest/*") into quast_results
 
     script:
-    def size_parameter = params.genomesize!=null ? "--est-ref-size ${params.genomesize}" : ""
+    def size_parameter = params.genomesize ? "--est-ref-size ${params.genomesize}" : ""
     """
     quast.py ${size_parameter} --threads ${task.cpus} ${asm}
     """
@@ -309,7 +290,7 @@ process busco {
 
     input:
     set val(id), file(asm) from supernova_asm2
-    env AUGUSTUS_CONFIG_PATH from "./augustus_config"
+    //env AUGUSTUS_CONFIG_PATH from ".augustus_config/"
     file(augustus_archive) from Channel.fromPath("$baseDir/misc/augustus_config.tar.bz2")
 
     output:
@@ -318,6 +299,7 @@ process busco {
     script:
     """
     tar xfj ${augustus_archive}
+    export AUGUSTUS_CONFIG_PATH=augustus_config/
     run_BUSCO.py -i ${asm} -o ${id} -c ${task.cpus} -m genome -l ${buscoPath}
     """
 }
