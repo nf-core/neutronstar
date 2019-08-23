@@ -18,7 +18,7 @@ You need NextFlow version >= 0.30 to run this pipeline.
 
 While it is possible to run the pipeline by having nextflow fetch it directly from GitHub, e.g `nextflow run nf-core/neutronstar`, depending on your system you will most likely have to download it (and configure it):
 
-```bashs
+```bash
 get https://github.com/nf-core/neutronstar/archive/master.zip
 unzip master.zip -d /my-pipelines/
 cd /my_data/
@@ -35,8 +35,8 @@ If your compute environment does not have access to the internet you can build t
 
 ```bash
 # Build image
-singularity pull --name "nf-core-neutronstar.simg" docker://nfcore/neutronstar
-singularity pull --name "supernova.simg" docker://remiolsen/supernova
+singularity pull --name "nf-core-neutronstar.sif" docker://nfcore/neutronstar
+singularity pull --name "supernova.sif" docker://remiolsen/supernova
 # Upload it to your_hpc:/singularity_images/
 ```
 
@@ -50,9 +50,9 @@ singularity {
 
 process {
 
-  container = { "/singularity_images/nf-core-neutronstar.simg" }
+  container = { "/singularity_images/nf-core-neutronstar.sif" }
   withName: 'supernova*' {
-    container = { "/singularity_images/supernova.simg" }
+    container = { "/singularity_images/supernova.sif" }
   }
 
 }
