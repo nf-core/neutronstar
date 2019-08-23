@@ -7,7 +7,7 @@ This pipeline will run the following programs
 * [BUSCO](http://busco.ezlab.org/)
 * [MultiQC](http://multiqc.info/)
 
-The results of the assembly run will be summarized by MultiQC in the file ./results/multiqc/[run_name]\_report.html
+The results of the assembly run will be summarised by MultiQC in the file ./results/multiqc/[run_name]\_report.html
 
 ---------
 
