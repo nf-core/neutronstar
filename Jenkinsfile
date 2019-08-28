@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh "nextflow run neutronstar/ -profile docker,jenkins -latest --id=testrun --fastqs=test-datasets/tests/NGI_micro10X_NA12878/ --maxreads=all --nopreflight"
+                sh "nextflow run neutronstar/ -profile standard,jenkins -latest --id=testrun --fastqs=test-datasets/tests/NGI_micro10X_NA12878/ --maxreads=all --nopreflight"
                 sh "rm -rf work/ .nextflow* results/"
             }
         }
