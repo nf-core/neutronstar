@@ -1,7 +1,12 @@
-# NGI-NeutronStar
+# nf-core/neutronstar Changelog
 
-## nf-core/neutronstar version 1.0dev - <date>
+## nf-core/neutronstar version 1.0 - <date>
 Initial release of nf-core/neutronstar, created with the [nf-core](http://nf-co.re/) template.
+
+* Added mock test data to be able to run Travis tests
+* More documentation
+* Streamlined a bit how parameters work / added sensible defaults
+* Numerous other smaller changes under the hood
 
 ## NGI-NeutronStar v0.5
 * Initial release
