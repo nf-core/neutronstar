@@ -14,7 +14,7 @@ mv nextflow ~/bin
 # OR system-wide installation:
 # sudo mv nextflow /usr/local/bin
 ```
-You need NextFlow version >= 0.30 to run this pipeline.
+You need NextFlow version >= 19.04.0 to run this pipeline.
 
 While it is possible to run the pipeline by having nextflow fetch it directly from GitHub, e.g `nextflow run nf-core/neutronstar`, depending on your system you will most likely have to download it (and configure it):
 

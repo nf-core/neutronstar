@@ -1,9 +1,12 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
 name: nf-core-neutronstar-1.0.0
 channels:
   - bioconda
   - conda-forge
   - defaults
 dependencies:
+  # TODO nf-core: Add required software dependencies here
   - bioconda::busco=3.0.2
   - bioconda::quast=5.0.2
   - bioconda::multiqc=1.8
