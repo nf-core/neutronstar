@@ -40,8 +40,7 @@ script:
   # Run the pipeline with the test profile faked fastq files
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir -p fakeq; touch fakeq/1.fq.gz; touch fakeq/2.fq.gz; touch fakeq/3.fq.gz
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile standard,docker,test --id testrun --maxreads all --fastqs fakeq/ --genomesize 1000 --max_cpus 2 --max_memory 4
   # Lint the documentation
   - markdownlint ${TRAVIS_BUILD_DIR} -c ${TRAVIS_BUILD_DIR}/.github/markdownlint.yml
   # Run the pipeline with the test profile
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --id testrun --maxreads all --fastqs fakeq/ --genomesize 1000 --max_cpus 2 --max_memory 4

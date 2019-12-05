@@ -387,7 +387,7 @@ process multiqc {
     file ('busco/') from busco_results.collect()
     file ('quast/') from quast_results.collect()
     file ('software_versions/') from software_versions_yaml.toList()
-    file(mqc_config) from Channel.fromPath("${params.mqc_config}")
+    file(mqc_config) from Channel.fromPath("${params.multiqc_config}")
 
     output:
     file "*multiqc_report.html"
