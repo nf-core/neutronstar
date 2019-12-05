@@ -88,9 +88,11 @@ This version number will be logged in reports when you run the pipeline, so that
 
 ### Single assembly
 To assemble a single sample, the pipeline can be started using the following command:
+
 ```
 nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] (--clusterOptions)
 ```
+
 * `nextflow_profile` is one of the environments that are defined in the file [nextflow.config](nextflow.config)
 * `[Supernova options]` are the following options that are following supernova options (use the command `supernova run --help` for a more detailed description or alternatively read the documentation available by [10X Genomics](https://www.10xgenomics.com/))
   * `--fastqs` **required**
@@ -121,6 +123,7 @@ samples:
     maxreads: 500000000
     bcfrac: 0.5
 ```
+
 Run nextflow using `nextflow run -profile nextflow_profile -params-file sample_config.yaml /path/to/neutronstar (--clusterOptions)`
 
 ---------

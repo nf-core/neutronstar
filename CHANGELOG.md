@@ -1,6 +1,6 @@
 # nf-core/neutronstar Changelog
 
-## nf-core/neutronstar version 1.0 - <date>
+## nf-core/neutronstar version 1.0 - 
 Initial release of nf-core/neutronstar, created with the [nf-core](http://nf-co.re/) template.
 
 * Added mock test data to be able to run Travis tests
