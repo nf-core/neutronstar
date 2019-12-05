@@ -30,22 +30,49 @@ https://img.shields.io/badge/singularity-available-7E4C74.svg)
 
 ---------
 
-### Introduction
 
-nf-core/neutronstar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data. The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker / singularity containers to make the results highly reproducible.
+## Introduction
 
-#### Disclaimer
+nf-core/neutronstar is a bioinformatics best-practice analysis pipeline used for de-novo assembly and quality-control of 10x Genomics Chromium data.
+The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
+
+## Quick Start
+
+i. Install [`nextflow`](https://nf-co.re/usage/installation)
+
+ii. Install one of [`docker`](https://docs.docker.com/engine/installation/), [`singularity`](https://www.sylabs.io/guides/3.0/user-guide/) or [`conda`](https://conda.io/miniconda.html)
+
+iii. Download the pipeline and test it on a minimal dataset with a single command
+
+```bash
+nextflow run nf-core/neutronstar -profile test,<docker/singularity/conda>
+```
+
+iv. Start running your own analysis!
+
+<!-- TODO nf-core: Update the default command above used to run the pipeline -->
+```bash
+nextflow run nf-core/neutronstar -profile <docker/singularity/conda> --id assembly_id --fastqs fastq_path --genomesize 1000000
+```
+
+See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
+
+## Disclaimer
 
 This software is in no way affiliated with nor endorsed by 10x Genomics.
 
 
----------
-
-### Pipeline overview
+## Pipeline overview
 
 ![nf-core/neutronstar chart](docs/images/neutronstar_chart.png)
 
----------
 
-### Credits
-These scripts were originally written for use at the [National Genomics Infrastructure](https://portal.scilifelab.se/genomics/) at [SciLifeLab](http://www.scilifelab.se/) in Stockholm, Sweden. Written by Remi-Andre Olsen (@remiolsen).
+## Credits
+
+nf-core/neutronstar was originally written by Remi-Andre Olsen (@remiolsen).
+
+## Contributions and Support
+
+If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+
+For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/nf-core/neutronstar) (you can join with [this invite](https://nf-co.re/join/slack)).

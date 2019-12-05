@@ -1,4 +1,6 @@
-### Installation
+# nf-core/neutronstar: Installation
+
+## Installation
 
 Nextflow runs on most POSIX systems (Linux, Mac OSX etc). It can be installed by running the following commands:
 
@@ -14,7 +16,8 @@ mv nextflow ~/bin
 # OR system-wide installation:
 # sudo mv nextflow /usr/local/bin
 ```
-You need NextFlow version >= 0.30 to run this pipeline.
+
+You need NextFlow version >= 19.04.0 to run this pipeline.
 
 While it is possible to run the pipeline by having nextflow fetch it directly from GitHub, e.g `nextflow run nf-core/neutronstar`, depending on your system you will most likely have to download it (and configure it):
 
@@ -27,7 +30,7 @@ nextflow run /my-pipelines/neutronstar-master
 
 ---------
 
-#### Singularity
+### Singularity
 
 If running the pipeline using the [Singularity](http://singularity.lbl.gov/) configurations (see below), Nextflow will automatically fetch the image from DockerHub. There there are two separate images, one for Supernova only and one for the other requirements of the pipeline.
 
@@ -66,7 +69,7 @@ nextflow run -c custom.yaml /my-pipelines/neutronstar-master
 
 ---------
 
-#### BUSCO data
+### BUSCO data
 
 By default nf-core/neutronstar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--busco_folder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
 

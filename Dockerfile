@@ -1,5 +1,6 @@
 FROM nfcore/base:1.7
-LABEL description="Docker image containing all requirements for nf-core/neutronstar pipeline"
+LABEL authors="Remi-Andre Olsen (@remiolsen)" \
+      description="Docker image containing all requirements for nf-core/neutronstar pipeline"
 
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
