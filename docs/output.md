@@ -21,7 +21,11 @@ By default the output from Supernova will be stored in two places.
     * sample_id.fasta, the `pseudohaploid` version
     * sample_id.phased.fasta, the `megabubbles` version where haplotypes are included as two separate fasta entries.
 
-To generate the two other output types, for instance `raw` you can use the command `supernova mkoutput --asmdir=./results/supernova/sample_id/outs/assembly --style=raw --outprefix=sample_id.raw`
+To generate the two other output types, for instance `raw` you can use the command:
+
+```bash
+supernova mkoutput --asmdir=./results/supernova/sample_id/outs/assembly --style=raw --outprefix=sample_id.raw
+```
 
 The MultiQC report will add the [statistics](https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/output/asm-stats) from Supernova to a table
 ![supernova_table](images/supernova_table.png)
