@@ -16,7 +16,7 @@ https://img.shields.io/badge/singularity-available-7E4C74.svg)
 
 1. [Introduction](README.md#introduction)
    * [Disclaimer](README.md#disclaimer)
-2. [Installation](docs/installation.md)
+2. [Important installation information](docs/installation.md)
    * [Singularity](docs/installation.md#singularity)
    * [Busco data](docs/installation.md#busco-data)
 3. [Usage instructions](docs/usage.md)

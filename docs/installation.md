@@ -1,34 +1,8 @@
-# nf-core/neutronstar: Installation
+# nf-core/neutronstar: Important installation information
 
-## Installation
+## Introduction
 
-Nextflow runs on most POSIX systems (Linux, Mac OSX etc). It can be installed by running the following commands:
-
-```bash
-# Make sure that Java v7+ is installed:
-java -version
-
-# Install Nextflow
-curl -fsSL get.nextflow.io | bash
-
-# Add Nextflow binary to your PATH:
-mv nextflow ~/bin
-# OR system-wide installation:
-# sudo mv nextflow /usr/local/bin
-```
-
-You need NextFlow version >= 19.04.0 to run this pipeline.
-
-While it is possible to run the pipeline by having nextflow fetch it directly from GitHub, e.g `nextflow run nf-core/neutronstar`, depending on your system you will most likely have to download it (and configure it):
-
-```bash
-get https://github.com/nf-core/neutronstar/archive/master.zip
-unzip master.zip -d /my-pipelines/
-cd /my_data/
-nextflow run /my-pipelines/neutronstar-master
-```
-
----------
+nfcore/neutronstar have a few deviations from the [normal installation procedure](https://nf-co.re/usage/local_installation) for nf-core pipelines. They are are listed in this document.
 
 ### Singularity
 
