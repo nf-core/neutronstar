@@ -21,20 +21,20 @@ def helpMessage() {
     nextflow run -profile singularity nf-core/neutronstar --id assembly_id --fastqs fastq_path --genomesize 1000000
 
     Mandatory arguments:
-      --id                          [Supernova parameter]
-      --fastqs                      [Supernova parameter]
+      --id                          [Supernova parameter] A unique run id, used to name output folder [a-zA-Z0-9_-]+.
+      --fastqs                      [Supernova parameter] Path of folder created by mkfastq or bcl2fastq.
       --genomesize                  The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
       -profile                      Configuration profile to use
       --busco_data                  The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
 
     Options:
-      --sample                      [Supernova parameter]
-      --lanes                       [Supernova parameter]
-      --indices                     [Supernova parameter]
-      --bcfrac                      [Supernova parameter]
-      --project                     [Supernova parameter]
-      --maxreads                    [Supernova parameter]
-      --nopreflight                 [Supernova parameter]
+      --sample                      [Supernova parameter] Prefix of the filenames of FASTQs to select.
+      --lanes                       [Supernova parameter] Comma-separated lane numbers.
+      --indices                     [Supernova parameter] Comma-separated sample index set "SI-001" or sequences.
+      --bcfrac                      [Supernova parameter] Fraction of barcodes in the sample to use.
+      --project                     [Supernova parameter] Name of the project folder within a mkfastq or bcl2fastq-generated folder to pick FASTQs from.
+      --maxreads                    [Supernova parameter] Downsample if more than NUM individual reads are provided or "all" to use all reads provided
+      --nopreflight                 [Supernova parameter] Skip preflight checks.
       --no_accept_extreme_coverage  Enables input coverage validation in Supernova (i.e. disables --accept-extreme-coverage)
       --minsize                     [Supernova mkdoutput parameter]
       --max_cpus                    Max amount of cpu cores for the job scheduler to request. Supernova will use all of them. (default=16)
