@@ -89,7 +89,7 @@ This version number will be logged in reports when you run the pipeline, so that
 ### Single assembly
 To assemble a single sample, the pipeline can be started using the following command:
 
-```
+```bash
 nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] (--clusterOptions)
 ```
 
