@@ -265,9 +265,16 @@ if (params.full_output) {
         set val(id), file("${id}_supernova") into supernova_results, supernova_results2
 
         script:
+        // We use rsync to fish out only the important assembly graph files for
+        // supernova mkoutput. Otherwise this folder would be approx. ten times the
+        // size of the input fastqs.
         """
         supernova run --id=${id} --fastqs=${fastqs} ${tenx_options} ${supernova_options}
-        rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*"  --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" --exclude="*" "${id}/" ${id}_supernova
+        rsync -rav --include="_*" --include="*.tgz" --include="outs/" --include="outs/*.*" \
+          --include="assembly/" --include="stats/***" --include="logs/***" --include="a.base/" \
+          --include="a.base/" --include="a.hbx" --include="a.inv" --include="final/***" --include="gang" \
+          --include="micro"  --include="a.hbx" --include="a.inv" --include="final/***" \
+          --exclude="*" "${id}/" ${id}_supernova
         """
     }
 
