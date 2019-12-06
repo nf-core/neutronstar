@@ -75,3 +75,11 @@ nf-core/neutronstar was originally written by Remi-Andre Olsen (@remiolsen).
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/nf-core/neutronstar) (you can join with [this invite](https://nf-co.re/join/slack)).
+
+## Citation
+
+If you use nf-core/neutronstar for your analysis, please cite it using the following doi:
+
+You can cite the `nf-core` pre-print as follows:
+
+> Ewels PA, Peltzer A, Fillinger S, Alneberg JA, Patel H, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. **nf-core: Community curated bioinformatics pipelines**. *bioRxiv*. 2019. p. 610741. [doi: 10.1101/610741](https://www.biorxiv.org/content/10.1101/610741v1).
