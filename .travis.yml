@@ -12,7 +12,7 @@ before_install:
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && ([ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ] || [ $TRAVIS_PULL_REQUEST_BRANCH = "patch" ]))'
   # Pull the docker image first so the test doesn't wait for this
   - docker pull nfcore/neutronstar:dev
-  - docker pull nfcore/supernova:latest
+  - docker pull nfcore/supernova:2.1.1
   # Fake the tag locally so that the pipeline runs properly
   - docker tag nfcore/neutronstar:dev nfcore/neutronstar:1.0.0
 
