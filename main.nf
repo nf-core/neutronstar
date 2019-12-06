@@ -102,7 +102,7 @@ if( workflow.profile == 'awsbatch') {
 }
 
 // Common options for both supernova and longranger
-def TenX_optional = {sample, lanes, indices, project ->
+def tenx_optional = {sample, lanes, indices, project ->
     def str = ""
     str += sample ? "--sample=${sample} " : ""
     str += lanes ? "--lanes=${lanes} " : ""
@@ -127,7 +127,7 @@ if (params.samples == null) { //We don't have sample JSON/YAML file, just use cm
     s = []
     s += params.id
     s += params.fastqs
-    s += TenX_optional(params.sample, params.lanes, params.indices, params.project)
+    s += tenx_optional(params.sample, params.lanes, params.indices, params.project)
     s += supernova_optional(params.maxreads, params.bcfrac, params.nopreflight, params.no_accept_extreme_coverage)
     samples << s
 }
@@ -140,7 +140,7 @@ for (sample in params.samples) {
     s = []
     s += sample.id
     s += sample.fastqs
-    s += TenX_optional(sample.sample, sample.lanes, sample.indices, sample.project)
+    s += tenx_optional(sample.sample, sample.lanes, sample.indices, sample.project)
     s += supernova_optional(sample.maxreads, sample.bcfrac, sample.nopreflight, sample.no_accept_extreme_coverage)
     samples << s
 }
