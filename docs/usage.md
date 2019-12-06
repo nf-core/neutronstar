@@ -39,7 +39,6 @@
   * [`--multiqc_config`](#--multiqc_config)
 <!-- TOC END -->
 
-
 ## Introduction
 Nextflow handles job submissions on SLURM or other environments, and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
 
@@ -80,7 +79,6 @@ It's a good idea to specify a pipeline version when running the pipeline on your
 First, go to the [nf-core/neutronstar releases page](https://github.com/nf-core/neutronstar/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
-
 
 ## Main arguments
 

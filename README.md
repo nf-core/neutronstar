@@ -12,7 +12,6 @@
 https://img.shields.io/badge/singularity-available-7E4C74.svg)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 
-
 ## Table of Contents
 
 1. [Introduction](README.md#introduction)
@@ -29,7 +28,6 @@ https://img.shields.io/badge/singularity-available-7E4C74.svg)
 6. [Credits](README.md#pipeline-overview)
 
 ---------
-
 
 ## Introduction
 
@@ -60,11 +58,9 @@ See [usage docs](docs/usage.md) for all of the available options when running th
 
 This software is in no way affiliated with nor endorsed by 10x Genomics.
 
-
 ## Pipeline overview
 
 ![nf-core/neutronstar chart](docs/images/neutronstar_chart.png)
-
 
 ## Credits
 
