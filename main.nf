@@ -70,13 +70,9 @@ if (params.help){
     exit 0
 }
 
-
 /*
  * SET UP CONFIGURATION VARIABLES
  */
-
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
-if (params.fasta) { ch_fasta = file(params.fasta, checkIfExists: true) }
 
 // Configurable variables
 params.name = false
@@ -104,7 +100,6 @@ else {
 if( workflow.profile == 'awsbatch') {
     if(!workflow.workDir.startsWith('s3:') || !params.outdir.startsWith('s3:')) exit 1, "Workdir or Outdir not on S3 - specify S3 Buckets for each to run on AWSBatch!"
 }
-
 
 // Common options for both supernova and longranger
 def TenX_optional = {sample, lanes, indices, project ->
@@ -183,9 +178,6 @@ def summary = [:]
 if (workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
 // TODO nf-core: Report custom parameters here
-summary['Reads']            = params.reads
-summary['Fasta Ref']        = params.fasta
-summary['Data Type']        = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Output dir']       = params.outdir
@@ -228,7 +220,6 @@ ${summary.collect { k,v -> "            <dt>$k</dt><dd><samp>${v ?: '<span style
 
    return yaml_file
 }
-
 
 Channel
     .from(samples)
