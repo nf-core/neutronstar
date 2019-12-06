@@ -14,8 +14,6 @@
   * [Multiple assemblies](#multiple-assemblies)
   * [Advanced usage](#advanced-usage)
   * [`-profile`](#-profile)
-* [Reference genomes](#reference-genomes)
-  * [`--igenomesIgnore`](#--igenomesignore)
 * [Job resources](#job-resources)
   * [Automatic resubmission](#automatic-resubmission)
   * [Custom resource requests](#custom-resource-requests)
@@ -147,14 +145,6 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
 * `test`
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
-
-## Reference genomes
-
-**Note!** This functionality is disabled for this pipeline.
-The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
-
-### `--igenomesIgnore`
-**default** Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
 
 ## Job resources
 ### Automatic resubmission
