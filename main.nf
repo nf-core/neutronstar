@@ -243,7 +243,6 @@ if (params.full_output) {
         input:
         set val(id), val(fastqs), val(tenx_options), val(supernova_options) from supernova_input
 
-
         output:
         set val(id), file("${id}/*") into supernova_results, supernova_results2
 
