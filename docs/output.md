@@ -35,6 +35,7 @@ The MultiQC report will add the [statistics](https://support.10xgenomics.com/de-
 ## QUAST
 
 Quast will give a measurement of assembly contiguity independent of Supernova. There will be a slight difference because of the way that Supernova calculates this. Compare for instance the scaffold N50 values with the ones from the previous table:
+
 ![quast_table](images/quast_table.png)
 
 ---------
