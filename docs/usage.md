@@ -49,13 +49,11 @@ It is recommended to limit the Nextflow Java virtual machines memory. We recomme
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
-<!-- TODO nf-core: Document required command line parameters to run the pipeline-->
-
 ## Running the pipeline
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/neutronstar --reads '*_R{1,2}.fastq.gz' -profile docker
+nextflow run nf-core/neutronstar -profile docker --id assembly_id --fastqs fastq_path --genomesize 1000000
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -101,7 +99,7 @@ nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] 
   * `--lanes`
   * `--indices`
   * `--bcfrac`
-  * `--maxreads`
+  * `--maxreads` (default 'all')
   * `--no_accept_extreme_coverage` Disables `--accept_extreme_coverage` option for Supernova
   * `--nopreflight`
 * `--clusterOptions` are the options to feed to the HPC job manager. For instance for SLURM `--clusterOptions="-A project -C node-type"`
@@ -152,17 +150,13 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 
-<!-- TODO nf-core: Document required command line parameters -->
-
-in one run.
-
-
 ## Reference genomes
 
+**Note!** This functionality is disabled for this pipeline.
 The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
 
 ### `--igenomesIgnore`
-Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
+**default** Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`.
 
 ## Job resources
 ### Automatic resubmission
@@ -185,8 +179,6 @@ The AWS region to run your job in. Default is set to `eu-west-1` but can be adju
 Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
 ## Other command line parameters
-
-<!-- TODO nf-core: Describe any other command line flags here -->
 
 ### `--outdir`
 The output directory where the results will be saved.

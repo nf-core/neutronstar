@@ -6,7 +6,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  # TODO nf-core: Add required software dependencies here
   - conda-forge::r-markdown=1.1
   - conda-forge::r-base=3.6.1
   - bioconda::busco=3.0.2

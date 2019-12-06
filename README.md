@@ -50,7 +50,6 @@ nextflow run nf-core/neutronstar -profile test,<docker/singularity/conda>
 
 iv. Start running your own analysis!
 
-<!-- TODO nf-core: Update the default command above used to run the pipeline -->
 ```bash
 nextflow run nf-core/neutronstar -profile <docker/singularity/conda> --id assembly_id --fastqs fastq_path --genomesize 1000000
 ```

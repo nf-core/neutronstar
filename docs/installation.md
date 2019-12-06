@@ -54,7 +54,7 @@ singularity {
 process {
 
   container = { "/singularity_images/nf-core-neutronstar.sif" }
-  withName: 'supernova*' {
+  withLabel: 'supernova' {
     container = { "/singularity_images/supernova.sif" }
   }
 
@@ -88,4 +88,13 @@ python busco_data.py list minimal
 # To download them
 python busco_data.py download minimal
 
+```
+
+It is recommended to add your custom path to the BUSCO data (*if you have these installed elsewhere on your system only*) to the `custom.yaml` configuration file. Like so:
+
+```bash
+printf """
+params.busco_folder = '/path/to/lineage_sets/'
+params.busco_data = 'eukaryota_odb9'
+""" >> custom.yaml
 ```
