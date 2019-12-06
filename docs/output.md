@@ -17,7 +17,7 @@ By default the output from Supernova will be stored in two places.
 
 1. `./results/supernova/sample_id` - This contains the assembly graph files, log files and statistics from supernova_asm1. See the [documentation](https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/output/overview) from 10XG for more details.
 
-2. ./results/assemblies/sample_id[.phased].fasta. These are the assembly fasta files. Two of the four [outputs](https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/output/generating) from Supernova are generated:
+2. `./results/assemblies/sample_id[.phased].fasta` - These are the assembly fasta files. Two of the four [outputs](https://support.10xgenomics.com/de-novo-assembly/software/pipelines/latest/output/generating) from Supernova are generated:
     * sample_id.fasta, the `pseudohaploid` version
     * sample_id.phased.fasta, the `megabubbles` version where haplotypes are included as two separate fasta entries.
 
