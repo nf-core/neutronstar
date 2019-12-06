@@ -172,14 +172,21 @@ if ( workflow.profile == 'awsbatch') {
 ch_multiqc_config = file(params.multiqc_config, checkIfExists: true)
 ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 
+def no_samples = 0
+for (i in samples) { no_samples += 1 }
+
 // Header log info
 log.info nfcoreHeader()
 def summary = [:]
 if (workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
-// TODO nf-core: Report custom parameters here
+summary['# samples']        = no_samples
+summary['Genome size']      = params.genomesize
+summary['clusterOptions']   = params.clusterOptions
+summary['Minsize']          = params.minsize
+summary['Full output']      = params.full_output
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
-if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
+if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container, $params.supernova_container"
 summary['Output dir']       = params.outdir
 summary['Launch dir']       = workflow.launchDir
 summary['Working dir']      = workflow.workDir
