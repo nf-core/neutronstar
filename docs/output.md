@@ -43,6 +43,7 @@ Quast will give a measurement of assembly contiguity independent of Supernova. T
 ## BUSCO
 
 Please see the user manual for [BUSCO](https://busco.ezlab.org/) to understand the meaning of the category of orthologs found in the assembly. For instance for a eukaryote species, you might want to use the `eukaryota_odb9` dataset to quickly get a result. However it is recommended to use the most specific dataset available, for instance for birds the aves_odb9 dataset:
+
 ![busco_plot](images/busco_plot.png)
 
 ## MultiQC
