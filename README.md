@@ -9,7 +9,6 @@
 [![Docker Container available](https://img.shields.io/docker/automated/nfcore/neutronstar.svg)](https://hub.docker.com/r/nfcore/neutronstar/)
 [![Docker Container available](https://img.shields.io/docker/automated/remiolsen/supernova.svg)](https://hub.docker.com/r/remiolsen/supernova/)
 [![Singularity Container available](https://img.shields.io/badge/singularity-available-purple.svg)](https://www.sylabs.io/docs/)
-https://img.shields.io/badge/singularity-available-7E4C74.svg)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 
 ## Table of Contents

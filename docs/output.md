@@ -3,6 +3,7 @@
 This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
 ## Pipeline overview
+
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:
 
@@ -47,6 +48,7 @@ Please see the user manual for [BUSCO](https://busco.ezlab.org/) to understand t
 ![busco_plot](images/busco_plot.png)
 
 ## MultiQC
+
 [MultiQC](http://multiqc.info) is a visualisation tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in within the report data directory.
 
 The pipeline has special steps which allow the software versions used to be reported in the MultiQC output for future traceability.
