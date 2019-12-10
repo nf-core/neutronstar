@@ -25,7 +25,8 @@ jobs:
       - name: Test python script and install dependencies
         run: |
           pip install requests
-          python ${GITHUB_WORKSPACE}/data/busco_data.py --help
+          cd ${GITHUB_WORKSPACE}/data/
+          python busco_data.py --help
       - name: Test main.nf
         run: |
           mkdir -p fakeq; touch fakeq/1.fq.gz; touch fakeq/2.fq.gz; touch fakeq/3.fq.gz
