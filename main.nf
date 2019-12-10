@@ -79,7 +79,7 @@ params.plaintext_email = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
-def buscoPath = "${params.busco_folder}/${params.busco_data}"
+def buscoPath = file("${params.busco_folder}/${params.busco_data}")
 
 // Has the run name been specified by the user?
 //  this has the bonus effect of catching both -name and --name
