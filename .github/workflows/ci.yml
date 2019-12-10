@@ -17,7 +17,16 @@ jobs:
           export NXF_VER=${{ matrix.nxf_ver }}
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-      - name: Run test
+      - name: Download and tag docker containers
+        run: |
+          docker pull nfcore/neutronstar:dev
+          docker pull nfcore/supernova:2.1.1
+          docker tag nfcore/neutronstar:dev nfcore/neutronstar:1.0.0
+      - name: Test python script and install dependencies
+        run: |
+          pip install requests
+          python ${GITHUB_WORKSPACE}/data/busco_data.py --help
+      - name: Test main.nf
         run: |
           mkdir -p fakeq; touch fakeq/1.fq.gz; touch fakeq/2.fq.gz; touch fakeq/3.fq.gz
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --id testrun --maxreads all --fastqs fakeq/ --genomesize 1000 --max_cpus 2 --max_memory 4
