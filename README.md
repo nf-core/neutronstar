@@ -2,12 +2,13 @@
 
 **De novo assembly pipeline for 10X linked-reads.**
 
-[![Build Status](https://travis-ci.org/remiolsen/nf-core-neutronstar.svg?branch=master)](https://travis-ci.org/remiolsen/nf-core-neutronstar)
+[![Build Status](https://travis-ci.com/nf-core/neutronstar.svg?branch=master)](https://travis-ci.com/nf-core/neutronstar)
+[![GitHub Actions CI Status](https://github.com/{{ cookiecutter.name }}/workflows/nf-core%20CI/badge.svg)](https://github.com/{{ cookiecutter.name }}/actions)
+[![GitHub Actions Linting Status](https://github.com/{{ cookiecutter.name }}/workflows/nf-core%20linting/badge.svg)](https://github.com/{{ cookiecutter.name }}/actions)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.04.0-brightgreen.svg)](https://www.nextflow.io/)
-[![Gitter](https://img.shields.io/badge/gitter-%20join%20chat%20%E2%86%92-4fb99a.svg)](https://gitter.im/nf-core/Lobby)
 
 [![Docker Container available](https://img.shields.io/docker/automated/nfcore/neutronstar.svg)](https://hub.docker.com/r/nfcore/neutronstar/)
-[![Docker Container available](https://img.shields.io/docker/automated/remiolsen/supernova.svg)](https://hub.docker.com/r/remiolsen/supernova/)
+[![Docker Container available](https://img.shields.io/docker/automated/nfcore/supernova.svg)](https://hub.docker.com/r/nfcore/supernova/)
 [![Singularity Container available](https://img.shields.io/badge/singularity-available-purple.svg)](https://www.sylabs.io/docs/)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 
