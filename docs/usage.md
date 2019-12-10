@@ -17,9 +17,6 @@
 * [Job resources](#job-resources)
   * [Automatic resubmission](#automatic-resubmission)
   * [Custom resource requests](#custom-resource-requests)
-* [AWS Batch specific parameters](#aws-batch-specific-parameters)
-  * [`--awsqueue`](#--awsqueue)
-  * [`--awsregion`](#--awsregion)
 * [Other command line parameters](#other-command-line-parameters)
   * [`--outdir`](#--outdir)
   * [`--email`](#--email)
@@ -94,18 +91,20 @@ nextflow run -profile nextflow_profile /path/to/neutronstar [Supernova options] 
 
 * `nextflow_profile` is one of the environments that are defined in the file [nextflow.config](nextflow.config)
 * `[Supernova options]` are the following options that are following supernova options (use the command `supernova run --help` for a more detailed description or alternatively read the documentation available by [10X Genomics](https://www.10xgenomics.com/))
-  * `--fastqs` **required**
-  * `--id` **required**
-  * `--sample`
-  * `--lanes`
-  * `--indices`
-  * `--bcfrac`
-  * `--maxreads` (default 'all')
+  * `--fastqs` **required** Path of folder created by mkfastq or bcl2fastq.
+  * `--id` **required** A unique run id, used to name output folder [a-zA-Z0-9_-]+.
+  * `--sample` Prefix of the filenames of FASTQs to select.
+  * `--lanes` Comma-separated lane numbers.
+  * `--indices` Comma-separated sample index set "SI-001" or sequences.
+  * `--bcfrac` Fraction of barcodes in the sample to use.
+  * `--maxreads` Downsample if more than NUM individual reads are provided or 'all' to use all reads provided (default='all')
   * `--no_accept_extreme_coverage` Disables `--accept_extreme_coverage` option for Supernova
-  * `--nopreflight`
+  * `--nopreflight` Skip preflight checks.
+  * `--minsize` Skip FASTA records shorter than NUM. (default=1000)
 * `--clusterOptions` are the options to feed to the HPC job manager. For instance for SLURM `--clusterOptions="-A project -C node-type"`
 * `--genomesize` The estimated size of the genome(s) to be assembled. This is mainly used by Quast to compute NGxx statstics, e.g. N50 statistics bound by this value and not the assembly size.
 * `--busco_data` The dataset BUSCO should use (e.g. eukaryota_odb9, protists_ensembl)
+* `--busco_folder` Path to directory containing BUSCO datasets (default=$baseDir/data)
 
 ---------
 
@@ -133,12 +132,11 @@ Run nextflow using `nextflow run -profile nextflow_profile -params-file sample_c
 To greatly reduce the storage requirements of the assembly graphs of Supernova, only a limited number of files will be copied from it's output. Enough to run `supernova mkoutput`. If you for some reason require the full output, please run with the argument `--full_output`
 
 ### `-profile`
+
 Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile docker` - the order of arguments is important!
 
 If `-profile` is not specified at all the pipeline will be run locally and expects all software to be installed and available on the `PATH`.
 
-* `awsbatch`
-  * A generic configuration profile to be used with AWS Batch.
 * `conda`
   * A generic configuration profile to be used with [conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
@@ -165,20 +163,6 @@ Wherever process-specific requirements are set in the pipeline, the default valu
 If you are likely to be running `nf-core` pipelines regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter (see definition below). You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
 If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack/).
-
-## AWS Batch specific parameters
-
-Running the pipeline on AWS Batch requires a couple of specific parameters to be set according to your AWS Batch configuration. Please use the `-awsbatch` profile and then specify all of the following parameters.
-
-### `--awsqueue`
-
-The JobQueue that you intend to use on AWS Batch.
-
-### `--awsregion`
-
-The AWS region to run your job in. Default is set to `eu-west-1` but can be adjusted to your needs.
-
-Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
 ## Other command line parameters
 
