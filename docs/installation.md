@@ -1,33 +1,10 @@
-### Installation
+# nf-core/neutronstar: Important installation information
 
-Nextflow runs on most POSIX systems (Linux, Mac OSX etc). It can be installed by running the following commands:
+## Introduction
 
-```bash
-# Make sure that Java v7+ is installed:
-java -version
+nfcore/neutronstar have a few deviations from the [normal installation procedure](https://nf-co.re/usage/local_installation) for nf-core pipelines. They are are listed in this document.
 
-# Install Nextflow
-curl -fsSL get.nextflow.io | bash
-
-# Add Nextflow binary to your PATH:
-mv nextflow ~/bin
-# OR system-wide installation:
-# sudo mv nextflow /usr/local/bin
-```
-You need NextFlow version >= 0.30 to run this pipeline.
-
-While it is possible to run the pipeline by having nextflow fetch it directly from GitHub, e.g `nextflow run nf-core/neutronstar`, depending on your system you will most likely have to download it (and configure it):
-
-```bashs
-get https://github.com/nf-core/neutronstar/archive/master.zip
-unzip master.zip -d /my-pipelines/
-cd /my_data/
-nextflow run /my-pipelines/neutronstar-master
-```
-
----------
-
-#### Singularity
+### Singularity
 
 If running the pipeline using the [Singularity](http://singularity.lbl.gov/) configurations (see below), Nextflow will automatically fetch the image from DockerHub. There there are two separate images, one for Supernova only and one for the other requirements of the pipeline.
 
@@ -35,8 +12,8 @@ If your compute environment does not have access to the internet you can build t
 
 ```bash
 # Build image
-singularity pull --name "nf-core-neutronstar.simg" docker://nfcore/neutronstar
-singularity pull --name "supernova.simg" docker://remiolsen/supernova
+singularity pull --name "nf-core-neutronstar.sif" docker://nfcore/neutronstar
+singularity pull --name "supernova.sif" docker://remiolsen/supernova
 # Upload it to your_hpc:/singularity_images/
 ```
 
@@ -50,9 +27,9 @@ singularity {
 
 process {
 
-  container = { "/singularity_images/nf-core-neutronstar.simg" }
-  withName: 'supernova*' {
-    container = { "/singularity_images/supernova.simg" }
+  container = { "/singularity_images/nf-core-neutronstar.sif" }
+  withLabel: 'supernova' {
+    container = { "/singularity_images/supernova.sif" }
   }
 
 }
@@ -66,7 +43,7 @@ nextflow run -c custom.yaml /my-pipelines/neutronstar-master
 
 ---------
 
-#### BUSCO data
+### BUSCO data
 
 By default nf-core/neutronstar will look for the BUSCO lineage datasets in the `data` folder, e.g. `/my-pipelines/neutronstar-master/data/`. However if you have these datasets installed any other path it is possible to specify this using the option `--busco_folder /path/to/lineage_sets/`. Included with the pipeline is a script to download BUSCO data, in `/my-pipelines/neutronstar/data/busco_data.py`
 
@@ -85,4 +62,13 @@ python busco_data.py list minimal
 # To download them
 python busco_data.py download minimal
 
+```
+
+It is recommended to add your custom path to the BUSCO data (*if you have these installed elsewhere on your system only*) to the `custom.yaml` configuration file. Like so:
+
+```bash
+printf """
+params.busco_folder = '/path/to/lineage_sets/'
+params.busco_data = 'eukaryota_odb9'
+""" >> custom.yaml
 ```
