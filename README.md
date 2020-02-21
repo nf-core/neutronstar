@@ -2,10 +2,9 @@
 
 **De novo assembly pipeline for 10X linked-reads.**
 
-[![Build Status](https://travis-ci.com/nf-core/neutronstar.svg?branch=master)](https://travis-ci.com/nf-core/neutronstar)
 [![GitHub Actions CI Status](https://github.com/nf-core/neutronstar/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/neutronstar/actions)
 [![GitHub Actions Linting Status](https://github.com/nf-core/neutronstar/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/neutronstar/actions)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.04.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
 
 [![Docker Container available](https://img.shields.io/docker/automated/nfcore/neutronstar.svg)](https://hub.docker.com/r/nfcore/neutronstar/)
 [![Docker Container available](https://img.shields.io/docker/automated/nfcore/supernova.svg)](https://hub.docker.com/r/nfcore/supernova/)
@@ -38,18 +37,23 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 i. Install [`nextflow`](https://nf-co.re/usage/installation)
 
-ii. Install one of [`docker`](https://docs.docker.com/engine/installation/), [`singularity`](https://www.sylabs.io/guides/3.0/user-guide/) or [`conda`](https://conda.io/miniconda.html)
+ii. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility (please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))
 
 iii. Download the pipeline and test it on a minimal dataset with a single command
 
 ```bash
-nextflow run nf-core/neutronstar -profile test,<docker/singularity/conda>
+nextflow run nf-core/neutronstar -profile test,<docker/singularity/conda/institute>
 ```
+
+> Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
 
 iv. Start running your own analysis!
 
+
+<!-- TODO nf-core: Update the default command above used to run the pipeline -->
+
 ```bash
-nextflow run nf-core/neutronstar -profile <docker/singularity/conda> --id assembly_id --fastqs fastq_path --genomesize 1000000
+nextflow run nf-core/neutronstar -profile <docker/singularity/conda/institute> --id assembly_id --fastqs fastq_path --genomesize 1000000
 ```
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
@@ -70,7 +74,7 @@ nf-core/neutronstar was originally written by Remi-Andre Olsen (@remiolsen).
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/nf-core/neutronstar) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on [Slack](https://nfcore.slack.com/channels/neutronstar) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citation
 
@@ -78,4 +82,11 @@ If you use nf-core/neutronstar for your analysis, please cite it using the follo
 
 You can cite the `nf-core` pre-print as follows:
 
-> Ewels PA, Peltzer A, Fillinger S, Alneberg JA, Patel H, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. **nf-core: Community curated bioinformatics pipelines**. *bioRxiv*. 2019. p. 610741. [doi: 10.1101/610741](https://www.biorxiv.org/content/10.1101/610741v1).
+You can cite the `nf-core` publication as follows:
+
+> **The nf-core framework for community-curated bioinformatics pipelines.**
+>
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
+>
+> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).  
+> ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)
