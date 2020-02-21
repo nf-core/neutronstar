@@ -22,8 +22,8 @@ jobs:
       - name: Pull docker image
         run: |
           docker pull nfcore/neutronstar:dev
+          docker tag nfcore/neutronstar:dev nfcore/neutronstar:1.0.0
           docker pull nfcore/supernova:2.1.1
-          docker tag nfcore/neutronstar:dev nfcore/neutronstar:dev
       - name: Run pipeline with test data
         run: |
           # TODO nf-core: You can customise CI pipeline run tests as required

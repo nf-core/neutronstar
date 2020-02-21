@@ -49,7 +49,6 @@ nextflow run nf-core/neutronstar -profile test,<docker/singularity/conda/institu
 
 iv. Start running your own analysis!
 
-
 <!-- TODO nf-core: Update the default command above used to run the pipeline -->
 
 ```bash
