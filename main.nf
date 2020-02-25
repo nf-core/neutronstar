@@ -78,11 +78,10 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
 
-multiqc_config = file(params.multiqc_config)
+multiqc_config = file("$baseDir/conf/multiqc_config.yaml")
 output_docs = file("$baseDir/docs/output.md")
 def buscoPath = file("${params.busco_folder}/${params.busco_data}")
 
@@ -171,7 +170,7 @@ if (workflow.profile.contains('awsbatch')) {
 }
 
 // Stage config files
-ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = file("$baseDir/conf/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
 ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 
