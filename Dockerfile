@@ -1,6 +1,6 @@
-FROM nfcore/base:1.7
+FROM nfcore/base:1.9
 LABEL authors="Remi-Andre Olsen (@remiolsen)" \
-      description="Docker image containing all requirements for nf-core/neutronstar pipeline"
+      description="Docker image containing all software requirements for the nf-core/neutronstar pipeline"
 
 # Install the conda environment
 COPY environment.yml /

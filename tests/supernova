@@ -4,7 +4,10 @@ import sys
 import os
 import argparse
 import subprocess
-import requests
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 
 url = "https://github.com/nf-core/test-datasets/raw/neutronstar/tests/testrun_supernova.tar.gz"
 archive = url.split('/')[-1:][0]
@@ -16,9 +19,9 @@ if __name__ == '__main__':
 
   args, unknown = parser.parse_known_args()
 
-  if 'id' in args:
-    r = requests.get(url)
-    open(archive , 'wb').write(r.content)
+  if args.id:
+    r = urlopen(url).read()
+    open(archive , 'wb').write(r)
     tar = subprocess.call(['tar', 'zfx', archive])
     tar = subprocess.call(['mv', 'testrun_supernova', args.id])
   else:

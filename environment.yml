@@ -6,8 +6,9 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - conda-forge::r-markdown=1.1
-  - conda-forge::r-base=3.6.1
+  - conda-forge::markdown=3.1.1
+  - conda-forge::pymdown-extensions=6.0
+  - conda-forge::pygments=2.5.2
   - bioconda::busco=3.0.2
   - bioconda::quast=5.0.2
   - bioconda::multiqc=1.8
