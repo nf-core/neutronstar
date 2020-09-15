@@ -14,7 +14,7 @@
 
 ## ⚠️ Important note
 
-Due to the discontinuation of the primary data source for this pipeline (10X Chromium) being discontinued, this pipeline is now archived. This means that it will no longer be updated.
+Due to the discontinuation of the primary data source (10X Chromium) for this pipeline, it is now archived. This means that it will no longer be updated.
 
 ## Table of Contents
 
