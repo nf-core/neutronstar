@@ -12,6 +12,10 @@
 [![Singularity Container available](https://img.shields.io/badge/singularity-available-purple.svg)](https://www.sylabs.io/docs/)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 
+## ⚠️ Important note
+
+Due to the discontinuation of the primary data source for this pipeline (10X Chromium) being discontinued, this pipeline is now archived. This means that it will no longer be updated.
+
 ## Table of Contents
 
 1. [Introduction](README.md#introduction)
